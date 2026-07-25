@@ -1,0 +1,6 @@
+.DS_Store
+.wrangler/
+landing-deploy.zip
+
+# Design preview PNGs (~2MB each) — not needed for deployment
+site/preview-*.png
