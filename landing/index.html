@@ -20,21 +20,19 @@
   <meta name="twitter:image" content="https://www.daddaexhibition.com/assets/landing.jpg" />
 
   <link rel="icon" href="/assets/favicon.png" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=3" />
+  <link rel="stylesheet" href="/styles.css?v=5" />
 </head>
 <body>
-  <main class="landing" aria-label="dadda? exhibition coming soon">
-    <picture>
-      <source media="(max-width: 768px)" srcset="/assets/landing-mobile.jpg" />
-      <img
-        src="/assets/landing.jpg"
-        alt="dadda? — An exhibition about single fatherhood. Does anybody get it right? Coming soon."
-        width="1920"
-        height="1200"
-        fetchpriority="high"
-        decoding="async"
-      />
-    </picture>
+  <main class="landing">
+    <div class="landing__bg" aria-hidden="true"></div>
+
+    <p class="landing__tagline">Does anybody get it right?</p>
+
+    <footer class="landing__brand">
+      <h1 class="landing__title">dadda?</h1>
+      <p class="landing__subtitle">An Exhibition About Single Fatherhood.</p>
+      <p class="landing__status">Coming soon.</p>
+    </footer>
   </main>
 </body>
 </html>
