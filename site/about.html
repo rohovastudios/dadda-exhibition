@@ -1,44 +1,68 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>dadda? — about</title>
-<link rel="stylesheet" href="assets/site.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>dadda? — about</title>
+  <link rel="stylesheet" href="assets/site.css" />
 </head>
-<body>
+<body data-page="about">
 
-<nav class="nav">
-  <div class="nav-left">
-    <a class="" href="index.html">home</a>
-    <a class="" href="fathers.html">fathers</a>
-    <a class="" href="stories.html">stories</a>
-    <a class="active" href="about.html">about</a>
-  </div>
-  <div class="nav-right">
-    <a class="" href="submit.html">submit</a>
-    <a class="" href="archive.html">black hole</a>
-  </div>
+<a class="site-brand" href="index.html">dadda?</a>
+
+<nav class="site-nav" aria-label="Primary">
+  <a data-nav="about" href="about.html">about</a>
+  <a data-nav="contact" href="contact.html">contact</a>
+  <a data-nav="shop" href="shop.html">shop</a>
+  <a data-nav="submit" href="submit.html">submit</a>
 </nav>
-<div class="brand">dadda?</div>
 
+<main class="overlay-page">
+  <header class="overlay-header">
+    <span>dadda?</span>
+    <a href="index.html">close</a>
+  </header>
 
-<div class="vertical">ABOUT</div>
-<main class="page">
-  <section class="about-copy">
-    A photo exhibition that centers how single fatherhood is carried, remembered, defended, softened, and misunderstood.
-  </section>
-  <section class="about-small">
-    <div>
-      <p>dadda? photographs fathers alone in spaces built for children.</p>
-      <p>No children are photographed. The absence is the subject.</p>
-    </div>
-    <div>
-      <p>opening august 7th<br>the find lab<br>provo, utah</p>
-      <p>remote interviews and anonymous submissions accepted.</p>
-    </div>
-  </section>
+  <div class="overlay-grid prose">
+    <section>
+      <h2 class="section-label">Biography</h2>
+      <p>
+        dadda? is a photo exhibition that centers how single fatherhood is carried,
+        remembered, defended, softened, and misunderstood.
+      </p>
+      <p>
+        The work photographs fathers alone in spaces built for children. No children
+        are photographed. The absence is the subject.
+      </p>
+      <p>
+        Opening August 7th · The Find Lab · Provo, Utah
+      </p>
+    </section>
+
+    <section>
+      <h2 class="section-label">Exhibition</h2>
+      <p>
+        Each dad on the home grid opens into a full project — slides, grid, and story
+        folded together.
+      </p>
+      <p>
+        Remote interviews and anonymous submissions are accepted through the submit page.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="section-label">Contact</h2>
+      <p><a href="contact.html">Studio &amp; press contacts</a></p>
+      <p><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a></p>
+    </section>
+
+    <section>
+      <h2 class="section-label">Press</h2>
+      <p>Selected press and talks forthcoming.</p>
+    </section>
+  </div>
 </main>
 
+<script src="assets/site.js"></script>
 </body>
 </html>

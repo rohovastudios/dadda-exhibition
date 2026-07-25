@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>dadda? — project</title>
+  <link rel="stylesheet" href="assets/site.css" />
+</head>
+<body data-page="dad">
+
+<main class="dad-page">
+  <div class="dad-toolbar">
+    <div class="dad-toolbar-left">
+      <span id="dad-title"></span>
+    </div>
+    <div class="dad-toolbar-right">
+      <button type="button" id="toggle-slides">slides</button>
+      <button type="button" id="toggle-grid">grid</button>
+      <a href="index.html">close</a>
+    </div>
+  </div>
+
+  <div class="dad-stage">
+    <section id="dad-slides"></section>
+    <section id="dad-grid" class="dad-project-grid" hidden></section>
+    <p class="dad-counter" id="dad-counter"></p>
+    <section id="dad-info" class="dad-info" hidden></section>
+  </div>
+</main>
+
+<script src="assets/dads.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

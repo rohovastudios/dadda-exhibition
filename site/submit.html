@@ -1,47 +1,71 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>dadda? — submit</title>
-<link rel="stylesheet" href="assets/site.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>dadda? — submit</title>
+  <link rel="stylesheet" href="assets/site.css" />
 </head>
-<body>
+<body data-page="submit">
 
-<nav class="nav">
-  <div class="nav-left">
-    <a class="" href="index.html">home</a>
-    <a class="" href="fathers.html">fathers</a>
-    <a class="" href="stories.html">stories</a>
-    <a class="" href="about.html">about</a>
-  </div>
-  <div class="nav-right">
-    <a class="active" href="submit.html">submit</a>
-    <a class="" href="archive.html">black hole</a>
-  </div>
+<a class="site-brand" href="index.html">dadda?</a>
+
+<nav class="site-nav" aria-label="Primary">
+  <a data-nav="about" href="about.html">about</a>
+  <a data-nav="contact" href="contact.html">contact</a>
+  <a data-nav="shop" href="shop.html">shop</a>
+  <a data-nav="submit" href="submit.html">submit</a>
 </nav>
-<div class="brand">dadda?</div>
 
-
-<main class="submit-layout">
-  <section>
-    <h1>single fathers<br>wanted.</h1>
-    <p>For photo sessions, recorded interviews, anonymous written submissions, and remote participation.</p>
+<main class="page page-wide split-layout">
+  <section class="prose">
+    <h1>Submit</h1>
+    <p>
+      Share a story, photograph, or memory related to single fatherhood. Submissions
+      may be anonymous. Selected work may be included in the exhibition archive.
+    </p>
+    <p>
+      Use the built-in form below, or the JotForm fallback if you prefer external hosting.
+    </p>
   </section>
-  <section class="form-card">
-    <label>name or alias<input placeholder="father 001"></label>
-    <label>email<input placeholder="you@email.com"></label>
-    <label>participation
-      <select>
-        <option>photo + interview</option>
-        <option>interview only</option>
-        <option>anonymous written story</option>
-      </select>
-    </label>
-    <label>tell us the part you keep repeating<textarea placeholder="start here"></textarea></label>
-    <a class="button" href="#">send</a>
+
+  <section>
+    <!-- Option A: native form — replace YOUR_FORM_ID with Formspree, Netlify Forms, or custom endpoint -->
+    <form class="form-card" action="https://formspree.io/f/YOUR_FORM_ID" method="post" enctype="multipart/form-data">
+      <label>
+        Name (optional)
+        <input type="text" name="name" autocomplete="name" />
+      </label>
+      <label>
+        Email (optional)
+        <input type="email" name="email" autocomplete="email" />
+      </label>
+      <label>
+        Story
+        <textarea name="story" required placeholder="Tell us what you want to share."></textarea>
+      </label>
+      <label>
+        Image (optional)
+        <input type="file" name="image" accept="image/*" />
+      </label>
+      <label>
+        <input type="checkbox" name="anonymous" value="yes" />
+        Submit anonymously
+      </label>
+      <button class="button" type="submit">Send submission</button>
+    </form>
+
+    <div class="jotform-fallback prose">
+      <h2>JotForm fallback</h2>
+      <p>Paste your JotForm embed code here if you want to use JotForm instead:</p>
+      <!--
+      <script type="text/javascript" src="https://form.jotform.com/jsform/YOUR_FORM_ID"></script>
+      -->
+      <p><em>Replace YOUR_FORM_ID in the HTML comment above with your JotForm embed.</em></p>
+    </div>
   </section>
 </main>
 
+<script src="assets/site.js"></script>
 </body>
 </html>

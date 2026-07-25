@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>dadda? — shop</title>
+  <link rel="stylesheet" href="assets/site.css" />
+</head>
+<body data-page="shop">
+
+<a class="site-brand" href="index.html">dadda?</a>
+
+<nav class="site-nav" aria-label="Primary">
+  <a data-nav="about" href="about.html">about</a>
+  <a data-nav="contact" href="contact.html">contact</a>
+  <a data-nav="shop" href="shop.html">shop</a>
+  <a data-nav="submit" href="submit.html">submit</a>
+</nav>
+
+<main class="page page-wide prose">
+  <h1>Shop</h1>
+  <p>Exhibition prints, book, and editioned objects. Checkout powered by Stripe.</p>
+
+  <div class="shop-grid">
+    <article class="shop-card">
+      <h2>Exhibition Print</h2>
+      <p>Archival inkjet · signed · edition of 25</p>
+      <p class="price">$120</p>
+      <!-- Replace href with your Stripe Payment Link -->
+      <a class="button button--disabled" href="#" aria-disabled="true">Checkout — add Stripe link</a>
+    </article>
+
+    <article class="shop-card">
+      <h2>dadda? Book</h2>
+      <p>Publication accompanying the exhibition.</p>
+      <p class="price">$45</p>
+      <a class="button button--disabled" href="#" aria-disabled="true">Checkout — add Stripe link</a>
+    </article>
+
+    <article class="shop-card">
+      <h2>Edition Object</h2>
+      <p>Limited run exhibition ephemera.</p>
+      <p class="price">TBD</p>
+      <a class="button button--disabled" href="#" aria-disabled="true">Coming soon</a>
+    </article>
+  </div>
+
+  <div class="checkout-note">
+    <strong>Stripe setup (next step):</strong>
+    Create products in the
+    <a href="https://dashboard.stripe.com/payment-links" target="_blank" rel="noopener">Stripe Dashboard → Payment Links</a>,
+    paste each link into the buttons above, and remove the <code>button--disabled</code> class.
+    For carts or multiple items later, we can move to Stripe Checkout Sessions or Shopify.
+  </div>
+</main>
+
+<script src="assets/site.js"></script>
+</body>
+</html>
