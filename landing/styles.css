@@ -17,6 +17,10 @@
   /* Cover-scale frame to viewport (matches object-fit: cover on full-bleed img) */
   --frame-h: max(100dvh, calc(100vw * var(--ref-h) / var(--ref-w)));
   --frame-w: max(100vw, calc(100dvh * var(--ref-w) / var(--ref-h)));
+  /* Hero vertical anchor on artboard (maps to viewport when frame is cover-centered) */
+  --hero-y: calc(600 / var(--ref-h));
+  /* Measured hero text bbox width at 14.5px — used to shrink type before overflow */
+  --hero-text-w: 465;
 }
 
 html,
@@ -66,16 +70,26 @@ body {
  * Public Sans Bold ~14.5px (50% of original 29px), letter-spacing 0.34em
  */
 .landing__hero {
-  position: absolute;
-  top: calc(600 / var(--ref-h) * 100%);
+  /* Fixed to viewport so horizontal center survives frame crop + text overflow */
+  position: fixed;
   left: 50%;
+  top: calc((100dvh - var(--frame-h)) / 2 + var(--hero-y) * var(--frame-h));
   transform: translate(-50%, -50%);
+  z-index: 1;
   margin: 0;
   width: max-content;
-  max-width: 92%;
+  max-width: calc(
+    100vw
+    - env(safe-area-inset-left, 0px)
+    - env(safe-area-inset-right, 0px)
+    - 2rem
+  );
   color: #fff;
   font-family: var(--font-public);
-  font-size: calc(14.5 / var(--ref-h) * var(--frame-h));
+  font-size: min(
+    calc(14.5 / var(--ref-h) * var(--frame-h)),
+    calc(14.5 / var(--hero-text-w) * 92vw)
+  );
   font-weight: 700;
   line-height: 1;
   text-align: center;
@@ -134,14 +148,26 @@ body {
 }
 
 @media (max-width: 768px) {
+  :root {
+    --hero-y: calc(337 / 675);
+  }
+
   .landing__frame {
     background-image: url("/assets/landing-mobile-bg.jpg");
   }
 
   .landing__hero {
-    top: calc(337 / 675 * 100%);
     white-space: normal;
-    max-width: 88%;
+    max-width: calc(
+      100vw
+      - env(safe-area-inset-left, 0px)
+      - env(safe-area-inset-right, 0px)
+      - 1.5rem
+    );
+    font-size: min(
+      calc(14.5 / var(--ref-h) * var(--frame-h)),
+      calc(14.5 / var(--hero-text-w) * 88vw)
+    );
   }
 
   .landing__hero-text {
