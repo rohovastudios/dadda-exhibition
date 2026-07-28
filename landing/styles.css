@@ -4,32 +4,153 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* Reference artboard from landing.jpg */
+  --ref-w: 1920;
+  --ref-h: 1200;
+  --ref-ratio: calc(var(--ref-w) / var(--ref-h));
+  /* Sampled from landing.jpg paper texture */
+  --pink: #f6406c;
+  --color-text: #000;
+  --font-public: "Public Sans", system-ui, -apple-system, sans-serif;
+  --font-newsreader-text: "Newsreader Text", Georgia, "Times New Roman", serif;
+  /* Cover-scale frame to viewport (matches object-fit: cover on full-bleed img) */
+  --frame-h: max(100dvh, calc(100vw * var(--ref-h) / var(--ref-w)));
+  --frame-w: max(100vw, calc(100dvh * var(--ref-w) / var(--ref-h)));
+}
+
 html,
 body {
   margin: 0;
   min-height: 100%;
-  background: #f43770;
+}
+
+body {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--pink);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .landing {
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
   overflow: hidden;
+  padding:
+    env(safe-area-inset-top, 0)
+    env(safe-area-inset-right, 0)
+    env(safe-area-inset-bottom, 0)
+    env(safe-area-inset-left, 0);
 }
 
-.landing picture,
-.landing img {
+/* Cover-scaled frame — text-free background preserves pink grain only */
+.landing__frame {
+  position: relative;
+  width: var(--frame-w);
+  height: var(--frame-h);
+  background-color: var(--pink);
+  background-image: url("/assets/landing-bg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+/*
+ * Hero measured from landing.jpg (1920×1200) via diff analysis:
+ * bbox 728–1193 × 589–610 → center (960, 600), 465×21px
+ * Public Sans Bold ~14.5px (50% of original 29px), letter-spacing 0.34em
+ */
+.landing__hero {
+  position: absolute;
+  top: calc(600 / var(--ref-h) * 100%);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  width: max-content;
+  max-width: 92%;
+  color: #fff;
+  font-family: var(--font-public);
+  font-size: calc(14.5 / var(--ref-h) * var(--frame-h));
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Letter-spacing on inner span only — avoids trailing gap after "?" */
+.landing__hero-text {
+  letter-spacing: 0.34em;
+}
+
+/*
+ * Footer measured: left 47px, bottom margin 50px (soon ends y=1150)
+ * Logo 263×48px, tagline gap 23px, soon gap 14px
+ */
+.landing__footer {
+  position: absolute;
+  left: calc(47 / var(--ref-w) * 100%);
+  bottom: max(calc(50 / var(--ref-h) * 100%), env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: calc(100% * (1 - 94 / var(--ref-w)));
+}
+
+.landing__logo {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: calc(48 / var(--ref-h) * var(--frame-h));
 }
 
-.landing img {
-  min-height: 100vh;
-  min-height: 100dvh;
-  object-fit: cover;
-  object-position: center;
+.landing__tagline {
+  margin: calc(23 / var(--ref-h) * var(--frame-h)) 0 0;
+  font-family: var(--font-newsreader-text);
+  font-size: calc(20 / var(--ref-h) * var(--frame-h));
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+}
+
+.landing__struck {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.landing__soon {
+  margin: calc(14 / var(--ref-h) * var(--frame-h)) 0 0;
+  font-family: var(--font-newsreader-text);
+  font-size: calc(19 / var(--ref-h) * var(--frame-h));
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .landing__frame {
+    background-image: url("/assets/landing-mobile-bg.jpg");
+  }
+
+  .landing__hero {
+    top: calc(337 / 675 * 100%);
+    white-space: normal;
+    max-width: 88%;
+  }
+
+  .landing__hero-text {
+    letter-spacing: 0.28em;
+  }
+
+  .landing__footer {
+    left: calc(27 / 1080 * 100%);
+    bottom: max(calc(29 / 675 * 100%), env(safe-area-inset-bottom, 0px));
+    max-width: calc(100% * (1 - 54 / 1080));
+  }
 }

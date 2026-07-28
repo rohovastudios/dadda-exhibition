@@ -4,3 +4,4 @@ landing-deploy.zip
 
 # Design preview PNGs (~2MB each) — not needed for deployment
 site/preview-*.png
+landing/node_modules/
