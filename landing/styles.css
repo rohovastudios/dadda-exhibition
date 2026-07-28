@@ -9,8 +9,8 @@
   --ref-w: 1920;
   --ref-h: 1200;
   --ref-ratio: calc(var(--ref-w) / var(--ref-h));
-  /* Sampled from landing.jpg paper texture */
-  --pink: #f6406c;
+  /* Sampled from DADDA?_PINK_BG_11x14in */
+  --pink: #f5406b;
   --color-text: #000;
   --font-public: "Public Sans", system-ui, -apple-system, sans-serif;
   --font-newsreader-text: "Newsreader Text", Georgia, "Times New Roman", serif;
@@ -52,13 +52,13 @@ body {
     env(safe-area-inset-left, 0);
 }
 
-/* Cover-scaled frame — text-free background preserves pink grain only */
+/* Cover-scaled frame — DADDA?_PINK_BG_11x14in texture */
 .landing__frame {
   position: relative;
   width: var(--frame-w);
   height: var(--frame-h);
   background-color: var(--pink);
-  background-image: url("/assets/landing-bg.jpg");
+  background-image: url("/assets/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -150,10 +150,6 @@ body {
 @media (max-width: 768px) {
   :root {
     --hero-y: calc(337 / 675);
-  }
-
-  .landing__frame {
-    background-image: url("/assets/landing-mobile-bg.jpg");
   }
 
   .landing__hero {
