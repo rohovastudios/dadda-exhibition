@@ -949,15 +949,14 @@ em.dadda {
 
 .aboutOverlay:not([hidden]) {
   pointer-events: auto;
+  background: #fff;
 }
 
 .aboutOverlay__backdrop {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: rgba(255, 247, 239, 0.72);
-  backdrop-filter: blur(18px) saturate(120%);
-  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  background: #fff;
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--transition-page);
@@ -978,6 +977,7 @@ em.dadda {
   z-index: 1;
   flex: 1;
   overflow: auto;
+  background: #fff;
   padding:
     calc(var(--header-height) + var(--header-pad-y) + 1.5rem)
     max(1.25rem, env(safe-area-inset-right, 0px))
@@ -1116,13 +1116,14 @@ em.dadda {
   text-decoration: underline;
 }
 
-.aboutOverlay .prose a {
-  color: inherit;
-  text-decoration: none;
-  transition: color 0.2s ease;
+.aboutOverlay .prose a,
+.aboutOverlay .contact-list a {
+  color: var(--pink);
+  text-decoration: underline;
 }
 
-.aboutOverlay .prose a:hover {
+.aboutOverlay .prose a:hover,
+.aboutOverlay .contact-list a:hover {
   color: var(--pink);
   text-decoration: underline;
 }
@@ -1943,23 +1944,66 @@ em.dadda {
   object-fit: contain;
 }
 
+body[data-page="submit"] {
+  --ref-w: 1920;
+  --ref-h: 1200;
+  --frame-h: max(100dvh, calc(100vw * var(--ref-h) / var(--ref-w)));
+  --frame-w: max(100vw, calc(100dvh * var(--ref-w) / var(--ref-h)));
+}
+
 body[data-page="submit"] .site-nav {
   display: none;
 }
 
 body[data-page="submit"] .site-header {
-  transition:
-    background 0.35s ease,
-    backdrop-filter 0.35s ease,
-    -webkit-backdrop-filter 0.35s ease,
-    border-color 0.35s ease;
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: block;
+  min-height: 0;
+  padding: 0;
+  pointer-events: none;
+  background: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+}
+
+body[data-page="submit"] .site-brand {
+  position: fixed;
+  left: calc(47 / var(--ref-w) * 100%);
+  bottom: max(calc(50 / var(--ref-h) * 100%), env(safe-area-inset-bottom, 0px));
+  z-index: 25;
+  pointer-events: auto;
+  display: inline-flex;
+  width: auto;
+  max-width: calc(100% * (1 - 94 / var(--ref-w)));
+}
+
+body[data-page="submit"] .site-brand__logo {
+  width: auto;
+  height: calc(48 / var(--ref-h) * var(--frame-h));
+  max-width: min(100%, calc(263 / var(--ref-w) * var(--frame-w)));
+  max-height: calc(48 / var(--ref-h) * var(--frame-h));
+}
+
+body[data-page="submit"] .site-header__close {
+  position: fixed;
+  top: max(var(--header-pad-y), env(safe-area-inset-top, 0px));
+  right: max(var(--header-pad-x), env(safe-area-inset-right, 0px));
+  z-index: 26;
+}
+
+body[data-page="submit"] .page-shell {
+  padding-top: calc(var(--header-pad-y) + 1.5rem);
+  padding-bottom: max(calc(130 / var(--ref-h) * 100%), calc(env(safe-area-inset-bottom, 0px) + 5rem));
 }
 
 body[data-page="submit"].is-scrolled .site-header {
-  background: var(--overlay-chrome-bg);
-  backdrop-filter: var(--overlay-chrome-blur);
-  -webkit-backdrop-filter: var(--overlay-chrome-blur);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 0;
 }
 
 /* —— Mobile: bottom nav pill on inner pages; home keeps header layout —— */
@@ -1972,7 +2016,16 @@ body[data-page="submit"].is-scrolled .site-header {
 
   body[data-page="submit"] .page-shell,
   body[data-page="submit"] .submit-page {
-    padding-bottom: max(4.4rem, calc(env(safe-area-inset-bottom, 0px) + 3.8rem));
+    padding-bottom: max(calc(130 / var(--ref-h) * 100%), calc(env(safe-area-inset-bottom, 0px) + 5rem));
+  }
+
+  body[data-page="submit"] .site-brand {
+    left: max(calc(27 / 1080 * 100%), env(safe-area-inset-left, 0px));
+    right: auto;
+    bottom: max(calc(29 / 675 * 100%), env(safe-area-inset-bottom, 0px));
+    max-width: calc(100% - max(calc(54 / 1080 * 100%), env(safe-area-inset-left, 0px)) - max(calc(54 / 1080 * 100%), env(safe-area-inset-right, 0px)));
+    width: auto;
+    justify-content: flex-start;
   }
 
   body[data-page="submit"] .submit-wizard__nav {
