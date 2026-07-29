@@ -1,47 +1,446 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>dadda? — submit</title>
-<link rel="stylesheet" href="assets/site.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>dadda? — submit</title>
+  <meta name="description" content="dadda? — Share your story about single fatherhood." />
+  <meta name="theme-color" content="#ef426f" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="assets/site.css?v=174" />
+  <script>document.documentElement.classList.add("js");</script>
 </head>
-<body>
+<body data-page="submit">
 
-<nav class="nav">
-  <div class="nav-left">
-    <a class="" href="index.html">home</a>
-    <a class="" href="fathers.html">fathers</a>
-    <a class="" href="stories.html">stories</a>
-    <a class="" href="about.html">about</a>
+<header class="site-header">
+  <a class="site-brand" href="index.html"><img class="site-brand__logo protected-media" src="assets/dadda-logo.png" alt="dadda?" width="2170" height="725" decoding="async" draggable="false" /></a>
+  <nav class="site-nav" aria-label="Primary">
+    <a data-nav="about" href="about.html">About</a>
+    <a data-nav="submit" href="submit.html">Submit</a>
+  </nav>
+  <a class="site-header__close" href="index.html" aria-label="Close">X</a>
+</header>
+
+<main class="page-shell page-shell--wide submit-page">
+  <div class="submit-intro prose" id="submit-intro">
+    <h1 class="page-title">Submit your story</h1>
+    <p>
+      Share words, photographs, or memories related to single fatherhood. Submissions may be
+      anonymous. Selected work may be included in the exhibition archive.
+    </p>
   </div>
-  <div class="nav-right">
-    <a class="active" href="submit.html">submit</a>
-    <a class="" href="archive.html">black hole</a>
-  </div>
-</nav>
-<div class="brand">dadda?</div>
 
+  <!-- Formspree endpoint: https://formspree.io/f/mbdnweyz -->
+  <form
+    id="submit-form"
+    class="submit-wizard"
+    action="https://formspree.io/f/mbdnweyz"
+    method="post"
+    enctype="multipart/form-data"
+    novalidate
+  >
+    <div class="submit-wizard__progress" aria-live="polite">
+      <span class="submit-wizard__progress-label">Step <span id="submit-step-current">1</span> of <span id="submit-step-total">8</span></span>
+      <div class="submit-wizard__progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1">
+        <span class="submit-wizard__progress-fill" id="submit-progress-fill"></span>
+      </div>
+    </div>
 
-<main class="submit-layout">
-  <section>
-    <h1>single fathers<br>wanted.</h1>
-    <p>For photo sessions, recorded interviews, anonymous written submissions, and remote participation.</p>
-  </section>
-  <section class="form-card">
-    <label>name or alias<input placeholder="father 001"></label>
-    <label>email<input placeholder="you@email.com"></label>
-    <label>participation
-      <select>
-        <option>photo + interview</option>
-        <option>interview only</option>
-        <option>anonymous written story</option>
-      </select>
-    </label>
-    <label>tell us the part you keep repeating<textarea placeholder="start here"></textarea></label>
-    <a class="button" href="#">send</a>
-  </section>
+    <!-- Step 1: Contact Information -->
+    <fieldset class="submit-step" data-step="1" data-required="true">
+      <legend class="submit-step__title">Contact Information <span class="submit-step__req" aria-hidden="true">*</span></legend>
+
+      <div class="submit-field submit-field--full">
+        <input type="text" id="full_legal_name" name="full_legal_name" autocomplete="name" required aria-describedby="label-full_legal_name" />
+        <label class="submit-field__label" id="label-full_legal_name" for="full_legal_name">Full Legal Name</label>
+        <p class="submit-field__error" data-error-for="full_legal_name" hidden>Please enter your full legal name.</p>
+      </div>
+
+      <div class="submit-row">
+        <div class="submit-field">
+          <input type="text" id="preferred_name" name="preferred_name" autocomplete="nickname" aria-describedby="label-preferred_name" />
+          <label class="submit-field__label" id="label-preferred_name" for="preferred_name">Preferred Name</label>
+        </div>
+        <div class="submit-field">
+          <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="label-email" />
+          <label class="submit-field__label" id="label-email" for="email">Email Address</label>
+          <p class="submit-field__error" data-error-for="email" hidden>Please enter a valid email address.</p>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <div class="submit-field">
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            inputmode="tel"
+            autocomplete="tel"
+            placeholder="+15550000000"
+            aria-describedby="label-phone"
+            maxlength="16"
+          />
+          <label class="submit-field__label" id="label-phone" for="phone">Phone Number (country code required)</label>
+          <p class="submit-field__error" data-error-for="phone" hidden>Enter your number as + country code then the rest, numbers only.</p>
+        </div>
+        <div class="submit-field">
+          <select id="country_of_residence" name="country_of_residence" autocomplete="country-name" aria-describedby="label-country_of_residence">
+            <option value="">Select country</option>
+          </select>
+          <label class="submit-field__label" id="label-country_of_residence" for="country_of_residence">Country of Residence</label>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <div class="submit-field">
+          <select id="preferred_contact_method" name="preferred_contact_method" aria-describedby="label-preferred_contact_method">
+            <option value="">Select one</option>
+            <option value="email">Email</option>
+            <option value="phone">Phone</option>
+            <option value="text">Text message</option>
+            <option value="no_preference">No preference</option>
+          </select>
+          <label class="submit-field__label" id="label-preferred_contact_method" for="preferred_contact_method">Preferred Method of Contact</label>
+        </div>
+        <div class="submit-field">
+          <select id="remain_anonymous" name="remain_anonymous" aria-describedby="label-remain_anonymous">
+            <option value="">Select one</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+          <label class="submit-field__label" id="label-remain_anonymous" for="remain_anonymous">I would like to remain anonymous</label>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Step 2: Fatherhood relationship -->
+    <fieldset class="submit-step" data-step="2" hidden>
+      <legend class="submit-step__title">Fatherhood / parenting relationship <span class="submit-step__optional">(Optional)</span></legend>
+      <p class="submit-step__lead">What best describes your current fatherhood / parenting relationship? Select any that apply. (Optional)</p>
+      <p class="submit-step__subtext">This section is optional. If you'd prefer to not answer, press "next."</p>
+
+      <div class="submit-checklist" role="group" aria-label="Fatherhood / parenting relationship">
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="full_time_parent" /> Full-time parent / primary caregiver</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="shared_custody" /> Shared custody / shared parenting</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="fifty_fifty" /> 50/50 parenting</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="weekends_part_time" /> Weekends / part-time parenting</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="long_distance" /> Long-distance fatherhood</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="co_parenting" /> Co-parenting</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="non_custodial_involved" /> Non-custodial but involved</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="limited_contact" /> Limited contact with my child</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="no_current_contact" /> No current contact with my child</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="never_met_child" /> I have never met my child</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="reconnecting" /> Reconnecting with my child</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="estranged" /> Estranged from my child</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="father_adult_children" /> Father of adult children</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="widowed_father" /> Widowed father</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="stepfather_figure" /> Stepfather / father figure</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="complicated" /> My situation is complicated</label>
+        <label class="submit-check"><input type="checkbox" name="fatherhood_relationship[]" value="prefer_not_to_answer" /> Prefer not to answer</label>
+      </div>
+    </fieldset>
+
+    <!-- Step 3: Children -->
+    <fieldset class="submit-step" data-step="3" hidden>
+      <legend class="submit-step__title">Children <span class="submit-step__optional">(Optional)</span></legend>
+      <p class="submit-step__lead">How many children do you have? For each child, please share their age or age range and gender. (Optional)</p>
+      <p class="submit-step__example">Example: 2 children — Daughter, age 8; Son, age 12. Or: 1 child — age range 3–5, gender not specified.</p>
+
+      <div class="submit-field submit-field--full">
+        <textarea id="children_info" name="children_info" rows="6" aria-describedby="label-children_info"></textarea>
+        <label class="submit-field__label" id="label-children_info" for="children_info">Your response</label>
+      </div>
+    </fieldset>
+
+    <!-- Step 4: Story responses (choose a prompt, write up to 3 responses) -->
+    <fieldset class="submit-step" data-step="4" data-required="true" hidden>
+      <legend class="submit-step__title">Your responses <span class="submit-step__req" aria-hidden="true">*</span></legend>
+      <p class="submit-step__lead">
+        Choose a writing prompt for each response. You may answer up to three prompts. At least one response is required.
+      </p>
+
+      <div class="submit-responses">
+        <div class="submit-response-block" data-response="1">
+          <p class="submit-response-block__heading">Response 1 <span class="submit-step__req" aria-hidden="true">*</span></p>
+          <div class="submit-field submit-field--full">
+            <select id="response_1_prompt" name="response_1_prompt" required aria-describedby="label-response_1_prompt" data-response-prompt="1">
+              <option value="">Choose a prompt</option>
+              <option value="single_fatherhood_looks_like">Single fatherhood looks like…</option>
+              <option value="part_people_dont_see">The part people don't see is…</option>
+              <option value="hope_child_remembers">I hope my child/children remembers/remember…</option>
+              <option value="feel_most_like_father">I feel most like a father when…</option>
+              <option value="hardest_part_to_explain">The hardest part to explain is…</option>
+              <option value="no_one_told_me">No one told me…</option>
+              <option value="taught_father_meant">When I was a child I was taught that being a father meant…</option>
+            </select>
+            <label class="submit-field__label" id="label-response_1_prompt" for="response_1_prompt">Prompt</label>
+            <p class="submit-field__error" data-error-for="response_1_prompt" hidden>Please choose a prompt.</p>
+          </div>
+          <div class="submit-field submit-field--full">
+            <textarea id="response_1" name="response_1" rows="8" required aria-describedby="label-response_1"></textarea>
+            <label class="submit-field__label" id="label-response_1" for="response_1">Your response</label>
+            <p class="submit-field__error" data-error-for="response_1" hidden>Please share your response.</p>
+          </div>
+        </div>
+
+        <div class="submit-response-block" data-response="2">
+          <p class="submit-response-block__heading">Response 2 <span class="submit-step__optional">(Optional)</span></p>
+          <div class="submit-field submit-field--full">
+            <select id="response_2_prompt" name="response_2_prompt" aria-describedby="label-response_2_prompt" data-response-prompt="2">
+              <option value="">Choose a prompt</option>
+              <option value="single_fatherhood_looks_like">Single fatherhood looks like…</option>
+              <option value="part_people_dont_see">The part people don't see is…</option>
+              <option value="hope_child_remembers">I hope my child/children remembers/remember…</option>
+              <option value="feel_most_like_father">I feel most like a father when…</option>
+              <option value="hardest_part_to_explain">The hardest part to explain is…</option>
+              <option value="no_one_told_me">No one told me…</option>
+              <option value="taught_father_meant">When I was a child I was taught that being a father meant…</option>
+            </select>
+            <label class="submit-field__label" id="label-response_2_prompt" for="response_2_prompt">Prompt</label>
+            <p class="submit-field__error" data-error-for="response_2_prompt" hidden>Please choose a prompt for this response.</p>
+          </div>
+          <div class="submit-field submit-field--full">
+            <textarea id="response_2" name="response_2" rows="8" aria-describedby="label-response_2"></textarea>
+            <label class="submit-field__label" id="label-response_2" for="response_2">Your response</label>
+            <p class="submit-field__error" data-error-for="response_2" hidden>Please share your response or leave this section blank.</p>
+          </div>
+        </div>
+
+        <div class="submit-response-block" data-response="3">
+          <p class="submit-response-block__heading">Response 3 <span class="submit-step__optional">(Optional)</span></p>
+          <div class="submit-field submit-field--full">
+            <select id="response_3_prompt" name="response_3_prompt" aria-describedby="label-response_3_prompt" data-response-prompt="3">
+              <option value="">Choose a prompt</option>
+              <option value="single_fatherhood_looks_like">Single fatherhood looks like…</option>
+              <option value="part_people_dont_see">The part people don't see is…</option>
+              <option value="hope_child_remembers">I hope my child/children remembers/remember…</option>
+              <option value="feel_most_like_father">I feel most like a father when…</option>
+              <option value="hardest_part_to_explain">The hardest part to explain is…</option>
+              <option value="no_one_told_me">No one told me…</option>
+              <option value="taught_father_meant">When I was a child I was taught that being a father meant…</option>
+            </select>
+            <label class="submit-field__label" id="label-response_3_prompt" for="response_3_prompt">Prompt</label>
+            <p class="submit-field__error" data-error-for="response_3_prompt" hidden>Please choose a prompt for this response.</p>
+          </div>
+          <div class="submit-field submit-field--full">
+            <textarea id="response_3" name="response_3" rows="8" aria-describedby="label-response_3"></textarea>
+            <label class="submit-field__label" id="label-response_3" for="response_3">Your response</label>
+            <p class="submit-field__error" data-error-for="response_3" hidden>Please share your response or leave this section blank.</p>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Step 5: Supporting Materials -->
+    <!-- CURATOR: If supporting_images[] include children, manually blur each child's face before publish. See SUBMIT_WORKFLOW.md -->
+    <fieldset class="submit-step" data-step="5" hidden>
+      <legend class="submit-step__title">Supporting Materials <span class="submit-step__optional">(Optional)</span></legend>
+
+      <p class="submit-step__lead">
+        To protect privacy, children and anyone other than you who appears in an uploaded image will not
+        be shown publicly in a clear or identifiable way. Before any public use, they may be cropped out,
+        blurred, covered, silhouetted, or otherwise obscured. If you submit images that include children,
+        curators will manually blur each child's face before anything is published.
+      </p>
+
+      <div class="submit-field submit-field--full submit-field--file">
+        <input
+          type="file"
+          class="submit-file-input"
+          id="supporting_images"
+          name="supporting_images[]"
+          accept="image/*"
+          multiple
+          aria-describedby="label-supporting_images"
+        />
+        <label class="submit-file-btn" for="supporting_images">Choose images</label>
+        <p class="submit-field__label" id="label-supporting_images">Up to 5 images allowed · 8 MB max per image</p>
+        <p class="submit-field__error submit-file-error" data-error-for="supporting_images" hidden></p>
+        <ul class="submit-file-previews" id="supporting-images-previews" hidden aria-live="polite" aria-label="Selected image previews"></ul>
+      </div>
+    </fieldset>
+
+    <!-- Step 6: Before you submit -->
+    <fieldset class="submit-step" data-step="6" data-required="true" hidden>
+      <legend class="submit-step__title">Before you submit <span class="submit-step__req" aria-hidden="true">*</span></legend>
+
+      <div class="submit-consent-list" role="group" aria-label="Required acknowledgements">
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_18" value="yes" required data-consent />
+          I am 18 years old or older
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_name_options" value="yes" required data-consent />
+          I understand that I can use my full name, first name only, an alias, or remain anonymous.
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_privacy_edits" value="yes" required data-consent />
+          I understand that names and identifying details may be changed or removed to protect privacy.
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_children_not_shown" value="yes" required data-consent />
+          I understand that children will not be publicly shown in a clear or identifiable way.
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_child_photos_obscured" value="yes" required data-consent />
+          I understand that if I upload a photo with a child or children, the child will be silhouetted, or otherwise obscured.
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_rights" value="yes" required data-consent />
+          I confirm that I have the right to submit the words, photos, and materials I provide.
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_usage" value="yes" required data-consent />
+          I understand that my submission may be used in the exhibition, website, social media, printed materials, press, books, documentaries, archives, and future versions of the project.
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_voluntary" value="yes" required data-consent />
+          I understand that I am contributing voluntarily and will not receive payment or royalties for this submission or future project uses.
+        </label>
+      </div>
+      <p class="submit-field__error" data-error-for="consent" hidden>Please confirm all items before continuing.</p>
+    </fieldset>
+
+    <!-- Step 7: Legal Release Signature -->
+    <fieldset class="submit-step" data-step="7" data-required="true" hidden>
+      <legend class="submit-step__title">Legal Release Signature <span class="submit-step__req" aria-hidden="true">*</span></legend>
+
+      <p class="submit-release__hint" id="submit-release-hint">Please scroll through the entire release before signing.</p>
+
+      <div class="submit-release prose" id="submit-release" tabindex="0" role="region" aria-label="Legal release">
+        <h2>Story Submission + Release</h2>
+        <p>
+          I hereby submit my written response, photographs, and any other materials (collectively,
+          "Materials") to the <em class="dadda">dadda?</em> project and its organizers, curators, and collaborators
+          (collectively, "Project Team") for possible inclusion in the exhibition, website, publications,
+          archives, and related programming.
+        </p>
+        <p>
+          I represent that I am at least 18 years of age and that I have the full right and authority to
+          submit the Materials. I grant the Project Team a perpetual, irrevocable, worldwide, royalty-free
+          license to use, reproduce, edit, adapt, publish, display, distribute, and archive the Materials
+          in any media now known or later developed, including but not limited to gallery exhibitions,
+          websites, social media, print, film, television, books, and educational materials.
+        </p>
+        <p>
+          I understand that the Project Team may edit, excerpt, anonymize, or otherwise modify the
+          Materials—including names and identifying details—to protect privacy and for editorial purposes.
+          I understand that children and other individuals who appear in submitted images will not be
+          shown publicly in a clear or identifiable way. If I upload photographs that include a child or
+          children, I understand that the Project Team will crop, blur, silhouette, or otherwise obscure
+          each child's face or identifying features before any public use.
+        </p>
+        <p>
+          I understand that my participation is voluntary and that I will not receive payment or royalties
+          for this submission or for any future use of the Materials by the Project Team.
+        </p>
+        <p>
+          I release and hold harmless the Project Team from any claims arising from the use of the
+          Materials as described herein, to the fullest extent permitted by law.
+        </p>
+        <span class="submit-release__end" id="submit-release-end" aria-hidden="true"></span>
+      </div>
+
+      <p class="submit-field__error" data-error-for="release_scroll" hidden>Please scroll to the bottom of the legal release before continuing.</p>
+      <input type="hidden" name="legal_release_read" id="legal_release_read" value="" />
+
+      <div class="submit-signature submit-signature--locked" id="submit-signature">
+        <p class="submit-signature__prompt">Choose one way to sign:</p>
+        <div class="submit-signature__tabs" role="tablist" aria-label="Signature method">
+          <button type="button" class="submit-signature__tab active" role="tab" aria-selected="true" data-signature-mode="typed">Type your name</button>
+          <button type="button" class="submit-signature__tab" role="tab" aria-selected="false" data-signature-mode="draw">Draw signature</button>
+        </div>
+
+        <div class="submit-signature__panel" data-signature-panel="typed">
+          <div class="submit-field submit-field--full">
+            <input type="text" id="signature_typed" name="signature" autocomplete="off" aria-describedby="label-signature" />
+            <label class="submit-field__label" id="label-signature" for="signature_typed">Type your full legal name as signature</label>
+          </div>
+        </div>
+
+        <div class="submit-signature__panel" data-signature-panel="draw" hidden>
+          <p class="submit-field__hint">Sign with your finger, stylus, or mouse.</p>
+          <canvas id="signature-canvas" class="submit-signature__canvas" width="640" height="180" aria-label="Signature drawing pad"></canvas>
+          <button type="button" class="button submit-signature__clear" id="signature-clear">Clear signature</button>
+          <input type="hidden" name="signature_image" id="signature_image" value="" />
+        </div>
+
+        <input type="hidden" name="signature_type" id="signature_type" value="typed" />
+        <p class="submit-field__error" data-error-for="signature" hidden>Please provide your signature before continuing.</p>
+      </div>
+    </fieldset>
+
+    <!-- Step 8: Follow-up interview -->
+    <fieldset class="submit-step" data-step="8" hidden>
+      <legend class="submit-step__title">Follow-up interview <span class="submit-step__optional">(Optional)</span></legend>
+      <p class="submit-step__lead">Are you open to being contacted for a possible follow-up interview?</p>
+
+      <div class="submit-checklist" role="group" aria-label="Follow-up interview preferences">
+        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="yes_in_person_or_video" /> Yes — I am open to an in-person or video interview</label>
+        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="yes_phone" /> Yes — I am open to a phone interview</label>
+        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="yes_email_only" /> Yes — contact me by email first to discuss</label>
+        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="no" /> No — I am not open to a follow-up interview at this time</label>
+      </div>
+    </fieldset>
+
+    <!-- Thank you (shown after successful submission) -->
+    <div class="submit-step submit-step--success" data-step="success" hidden>
+      <div class="submit-success">
+        <h2 class="submit-success__title">Thank you for your participation.</h2>
+        <div class="submit-success__body prose">
+          <p>
+            Your words and materials are a meaningful part of <em class="dadda">dadda?</em> — an ongoing project about single
+            fatherhood, care, absence, presence, and the stories that are often left out of public view.
+            The curatorial team will review your submission with care. If your work is selected, we may
+            contact you about how it will appear in the exhibition or archive. Thank you for trusting us
+            with something so personal.
+          </p>
+        </div>
+        <a class="submit-success__return" href="index.html">Return to <em class="dadda">dadda?</em></a>
+      </div>
+    </div>
+
+    <div class="submit-wizard__nav" id="submit-wizard-nav">
+      <button type="button" class="submit-wizard__btn submit-wizard__btn--prev" id="submit-prev" hidden>Previous</button>
+      <button type="button" class="submit-wizard__btn submit-wizard__btn--next" id="submit-next">Next</button>
+      <button type="submit" class="submit-wizard__btn submit-wizard__btn--submit" id="submit-send" hidden>Submit</button>
+    </div>
+  </form>
 </main>
 
+<div class="submitCrop" id="submit-crop" hidden aria-hidden="true">
+  <div class="submitCrop__backdrop" aria-hidden="true"></div>
+  <div class="submitCrop__panel" role="dialog" aria-modal="true" aria-labelledby="submit-crop-title">
+    <button type="button" class="submitCrop__close" id="submit-crop-close" aria-label="Close">X</button>
+    <p class="submitCrop__title" id="submit-crop-title">Crop image</p>
+    <p class="submitCrop__lead" id="submit-crop-progress"></p>
+    <div class="submitCrop__stage" id="submit-crop-stage">
+      <img class="submitCrop__image protected-media" id="submit-crop-image" alt="" draggable="false" />
+      <div class="submitCrop__frame" id="submit-crop-frame" data-ratio="4-5">
+        <span class="submitCrop__handle submitCrop__handle--nw" data-handle="nw" aria-hidden="true"></span>
+        <span class="submitCrop__handle submitCrop__handle--ne" data-handle="ne" aria-hidden="true"></span>
+        <span class="submitCrop__handle submitCrop__handle--sw" data-handle="sw" aria-hidden="true"></span>
+        <span class="submitCrop__handle submitCrop__handle--se" data-handle="se" aria-hidden="true"></span>
+      </div>
+    </div>
+    <div class="submitCrop__toolbar">
+      <button type="button" class="submitCrop__rotateBtn" id="submit-crop-rotate" aria-label="Rotate crop to landscape">
+        <svg class="submitCrop__rotateIcon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+        </svg>
+      </button>
+    </div>
+    <label class="submitCrop__zoomLabel">
+      <span>Zoom</span>
+      <input type="range" class="submitCrop__zoom" id="submit-crop-zoom" min="1" max="3" step="0.01" value="1" />
+    </label>
+    <div class="submitCrop__actions">
+      <button type="button" class="submit-wizard__btn submit-wizard__btn--next" id="submit-crop-apply">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/submit-countries.js"></script>
+<script src="assets/site.js?v=123"></script>
 </body>
 </html>

@@ -12,15 +12,15 @@
   /* Sampled from DADDA?_PINK_BG_11x14in */
   --pink: #f5406b;
   --color-text: #000;
-  --font-public: "Public Sans", system-ui, -apple-system, sans-serif;
+  --font-newsreader: "Newsreader", Georgia, "Times New Roman", serif;
   --font-newsreader-text: "Newsreader Text", Georgia, "Times New Roman", serif;
   /* Cover-scale frame to viewport (matches object-fit: cover on full-bleed img) */
   --frame-h: max(100dvh, calc(100vw * var(--ref-h) / var(--ref-w)));
   --frame-w: max(100vw, calc(100dvh * var(--ref-w) / var(--ref-h)));
   /* Hero vertical anchor on artboard (maps to viewport when frame is cover-centered) */
   --hero-y: calc(600 / var(--ref-h));
-  /* Measured hero text bbox width at 14.5px — used to shrink type before overflow */
-  --hero-text-w: 465;
+  /* Measured hero text bbox width at 14.5px (incl. trailing ?) — shrink before overflow */
+  --hero-text-w: 480;
 }
 
 html,
@@ -39,6 +39,31 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+.landingNav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  gap: clamp(1.25rem, 4vw, 2rem);
+  padding: max(0.75rem, env(safe-area-inset-top, 0px)) 1rem 0.5rem;
+  font-family: var(--font-newsreader-text);
+  font-size: 0.8125rem;
+}
+
+.landingNav a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.landingNav a:hover,
+.landingNav a:focus-visible {
+  text-decoration: underline;
+  outline: 0;
+}
+
 .landing {
   position: fixed;
   inset: 0;
@@ -50,6 +75,20 @@ body {
     env(safe-area-inset-right, 0)
     env(safe-area-inset-bottom, 0)
     env(safe-area-inset-left, 0);
+}
+
+/* Viewport overlay — flex center avoids transform/click drift */
+.landing__hero-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: calc((100% - var(--frame-h)) / 2 + var(--hero-y) * var(--frame-h));
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  pointer-events: none;
 }
 
 /* Cover-scaled frame — DADDA?_PINK_BG_11x14in texture */
@@ -66,35 +105,27 @@ body {
 
 /*
  * Hero measured from landing.jpg (1920×1200) via diff analysis:
- * bbox 728–1193 × 589–610 → center (960, 600), 465×21px
- * Public Sans Bold ~14.5px (50% of original 29px), letter-spacing 0.34em
+ * bbox 728–1193 × 589–610 → center (960, 600), ~465×21px + trailing ?
+ * Newsreader ~14.5px (50% of original 29px), letter-spacing 0.34em
  */
 .landing__hero {
-  /* Fixed to viewport so horizontal center survives frame crop + text overflow */
-  position: fixed;
-  left: 50%;
-  top: calc((100dvh - var(--frame-h)) / 2 + var(--hero-y) * var(--frame-h));
-  transform: translate(-50%, -50%);
-  z-index: 1;
   margin: 0;
-  width: max-content;
-  max-width: calc(
-    100vw
-    - env(safe-area-inset-left, 0px)
-    - env(safe-area-inset-right, 0px)
-    - 2rem
-  );
+  transform: translateY(-50%);
+  max-width: 100%;
   color: #fff;
-  font-family: var(--font-public);
+  font-family: var(--font-newsreader);
   font-size: min(
     calc(14.5 / var(--ref-h) * var(--frame-h)),
     calc(14.5 / var(--hero-text-w) * 92vw)
   );
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1;
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Letter-spacing on inner span only — avoids trailing gap after "?" */
@@ -120,6 +151,11 @@ body {
   display: block;
   width: auto;
   height: calc(48 / var(--ref-h) * var(--frame-h));
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  pointer-events: none;
 }
 
 .landing__tagline {
@@ -153,16 +189,10 @@ body {
   }
 
   .landing__hero {
-    white-space: normal;
-    max-width: calc(
-      100vw
-      - env(safe-area-inset-left, 0px)
-      - env(safe-area-inset-right, 0px)
-      - 1.5rem
-    );
+    white-space: nowrap;
     font-size: min(
       calc(14.5 / var(--ref-h) * var(--frame-h)),
-      calc(14.5 / var(--hero-text-w) * 88vw)
+      calc(14.5 / var(--hero-text-w) * 85vw)
     );
   }
 

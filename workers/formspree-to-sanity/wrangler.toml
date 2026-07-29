@@ -1,0 +1,9 @@
+name = "dadda-formspree-to-sanity"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+SANITY_DATASET = "production"
+
+# Set via: wrangler secret put SANITY_PROJECT_ID
+#          wrangler secret put SANITY_WRITE_TOKEN
