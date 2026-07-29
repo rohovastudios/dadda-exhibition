@@ -7,7 +7,7 @@
   <meta name="description" content="dadda? — Share your story about single fatherhood." />
   <meta name="theme-color" content="#ef426f" />
   <link rel="icon" href="assets/favicon.png" type="image/png" />
-  <link rel="stylesheet" href="assets/site.css?v=121" />
+  <link rel="stylesheet" href="assets/site.css?v=174" />
   <script>document.documentElement.classList.add("js");</script>
 </head>
 <body data-page="submit">
@@ -22,7 +22,7 @@
 </header>
 
 <main class="page-shell page-shell--wide submit-page">
-  <div class="submit-intro prose">
+  <div class="submit-intro prose" id="submit-intro">
     <h1 class="page-title">Submit your story</h1>
     <p>
       Share words, photographs, or memories related to single fatherhood. Submissions may be
@@ -40,8 +40,8 @@
     novalidate
   >
     <div class="submit-wizard__progress" aria-live="polite">
-      <span class="submit-wizard__progress-label">Step <span id="submit-step-current">1</span> of <span id="submit-step-total">9</span></span>
-      <div class="submit-wizard__progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="9" aria-valuenow="1">
+      <span class="submit-wizard__progress-label">Step <span id="submit-step-current">1</span> of <span id="submit-step-total">8</span></span>
+      <div class="submit-wizard__progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1">
         <span class="submit-wizard__progress-fill" id="submit-progress-fill"></span>
       </div>
     </div>
@@ -70,11 +70,23 @@
 
       <div class="submit-row">
         <div class="submit-field">
-          <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="+1 555 000 0000" aria-describedby="label-phone" />
-          <label class="submit-field__label" id="label-phone" for="phone">Phone Number (area / country code)</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            inputmode="tel"
+            autocomplete="tel"
+            placeholder="+15550000000"
+            aria-describedby="label-phone"
+            maxlength="16"
+          />
+          <label class="submit-field__label" id="label-phone" for="phone">Phone Number (country code required)</label>
+          <p class="submit-field__error" data-error-for="phone" hidden>Enter your number as + country code then the rest, numbers only.</p>
         </div>
         <div class="submit-field">
-          <input type="text" id="country_of_residence" name="country_of_residence" autocomplete="country-name" aria-describedby="label-country_of_residence" />
+          <select id="country_of_residence" name="country_of_residence" autocomplete="country-name" aria-describedby="label-country_of_residence">
+            <option value="">Select country</option>
+          </select>
           <label class="submit-field__label" id="label-country_of_residence" for="country_of_residence">Country of Residence</label>
         </div>
       </div>
@@ -222,9 +234,9 @@
     <!-- Step 5: Supporting Materials -->
     <!-- CURATOR: If supporting_images[] include children, manually blur each child's face before publish. See SUBMIT_WORKFLOW.md -->
     <fieldset class="submit-step" data-step="5" hidden>
-      <div class="submit-banner">Supporting Materials (Optional)</div>
+      <legend class="submit-step__title">Supporting Materials <span class="submit-step__optional">(Optional)</span></legend>
 
-      <p class="submit-privacy-note">
+      <p class="submit-step__lead">
         To protect privacy, children and anyone other than you who appears in an uploaded image will not
         be shown publicly in a clear or identifiable way. Before any public use, they may be cropped out,
         blurred, covered, silhouetted, or otherwise obscured. If you submit images that include children,
@@ -239,16 +251,12 @@
           name="supporting_images[]"
           accept="image/*"
           multiple
-          aria-describedby="label-supporting_images supporting-images-list"
+          aria-describedby="label-supporting_images"
         />
         <label class="submit-file-btn" for="supporting_images">Choose images</label>
-        <p class="submit-field__label" id="label-supporting_images">Upload images (optional, multiple files allowed)</p>
-        <p class="submit-field__hint" id="supporting-images-list"></p>
-      </div>
-
-      <div class="submit-field submit-field--full">
-        <textarea id="image_descriptions" name="image_descriptions" rows="5" aria-describedby="label-image_descriptions" placeholder="Describe who is in each image and any context you'd like us to know."></textarea>
-        <label class="submit-field__label" id="label-image_descriptions" for="image_descriptions">Describe who is in the image(s)</label>
+        <p class="submit-field__label" id="label-supporting_images">Up to 5 images allowed · 8 MB max per image</p>
+        <p class="submit-field__error submit-file-error" data-error-for="supporting_images" hidden></p>
+        <ul class="submit-file-previews" id="supporting-images-previews" hidden aria-live="polite" aria-label="Selected image previews"></ul>
       </div>
     </fieldset>
 
@@ -362,28 +370,8 @@
       </div>
     </fieldset>
 
-    <!-- Step 8: Thank you -->
+    <!-- Step 8: Follow-up interview -->
     <fieldset class="submit-step" data-step="8" hidden>
-      <div class="submit-banner">Thank you for your participation.</div>
-
-      <div class="submit-thankyou prose">
-        <p>
-          Your words and materials are a meaningful part of <em class="dadda">dadda?</em> — an ongoing project about single
-          fatherhood, care, absence, presence, and the stories that are often left out of public view.
-          The curatorial team will review your submission with care. If your work is selected, we may
-          contact you about how it will appear in the exhibition or archive. Thank you for trusting us
-          with something so personal.
-        </p>
-      </div>
-
-      <p class="submit-remaining">
-        <span class="submit-remaining__badge">1 Question</span>
-        One more optional question before you finish.
-      </p>
-    </fieldset>
-
-    <!-- Step 9: Follow-up interview -->
-    <fieldset class="submit-step" data-step="9" hidden>
       <legend class="submit-step__title">Follow-up interview <span class="submit-step__optional">(Optional)</span></legend>
       <p class="submit-step__lead">Are you open to being contacted for a possible follow-up interview?</p>
 
@@ -395,11 +383,20 @@
       </div>
     </fieldset>
 
-    <!-- Success state (shown after Formspree redirect or JS success) -->
+    <!-- Thank you (shown after successful submission) -->
     <div class="submit-step submit-step--success" data-step="success" hidden>
-      <div class="submit-banner">Submission received</div>
-      <div class="submit-thankyou prose">
-        <p>Thank you. Your submission has been sent to the <em class="dadda">dadda?</em> team. We appreciate your participation.</p>
+      <div class="submit-success">
+        <h2 class="submit-success__title">Thank you for your participation.</h2>
+        <div class="submit-success__body prose">
+          <p>
+            Your words and materials are a meaningful part of <em class="dadda">dadda?</em> — an ongoing project about single
+            fatherhood, care, absence, presence, and the stories that are often left out of public view.
+            The curatorial team will review your submission with care. If your work is selected, we may
+            contact you about how it will appear in the exhibition or archive. Thank you for trusting us
+            with something so personal.
+          </p>
+        </div>
+        <a class="submit-success__return" href="index.html">Return to <em class="dadda">dadda?</em></a>
       </div>
     </div>
 
@@ -411,6 +408,39 @@
   </form>
 </main>
 
-<script src="assets/site.js?v=73"></script>
+<div class="submitCrop" id="submit-crop" hidden aria-hidden="true">
+  <div class="submitCrop__backdrop" aria-hidden="true"></div>
+  <div class="submitCrop__panel" role="dialog" aria-modal="true" aria-labelledby="submit-crop-title">
+    <button type="button" class="submitCrop__close" id="submit-crop-close" aria-label="Close">X</button>
+    <p class="submitCrop__title" id="submit-crop-title">Crop image</p>
+    <p class="submitCrop__lead" id="submit-crop-progress"></p>
+    <div class="submitCrop__stage" id="submit-crop-stage">
+      <img class="submitCrop__image protected-media" id="submit-crop-image" alt="" draggable="false" />
+      <div class="submitCrop__frame" id="submit-crop-frame" data-ratio="4-5">
+        <span class="submitCrop__handle submitCrop__handle--nw" data-handle="nw" aria-hidden="true"></span>
+        <span class="submitCrop__handle submitCrop__handle--ne" data-handle="ne" aria-hidden="true"></span>
+        <span class="submitCrop__handle submitCrop__handle--sw" data-handle="sw" aria-hidden="true"></span>
+        <span class="submitCrop__handle submitCrop__handle--se" data-handle="se" aria-hidden="true"></span>
+      </div>
+    </div>
+    <div class="submitCrop__toolbar">
+      <button type="button" class="submitCrop__rotateBtn" id="submit-crop-rotate" aria-label="Rotate crop to landscape">
+        <svg class="submitCrop__rotateIcon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+        </svg>
+      </button>
+    </div>
+    <label class="submitCrop__zoomLabel">
+      <span>Zoom</span>
+      <input type="range" class="submitCrop__zoom" id="submit-crop-zoom" min="1" max="3" step="0.01" value="1" />
+    </label>
+    <div class="submitCrop__actions">
+      <button type="button" class="submit-wizard__btn submit-wizard__btn--next" id="submit-crop-apply">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/submit-countries.js"></script>
+<script src="assets/site.js?v=123"></script>
 </body>
 </html>

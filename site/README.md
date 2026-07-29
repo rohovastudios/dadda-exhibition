@@ -11,7 +11,11 @@ Tyler Mitchell–inspired layout with dadda? serif typography on a clean white/n
 | About overlay | `about.html` |
 | Contact | `contact.html` |
 | Shop (Stripe prep) | `shop.html` |
-| Submit (form + JotForm fallback) | `submit.html` |
+| Submit (8-step wizard) | `submit.html` |
+
+## Pre-launch home
+
+Until the archive opens, the home page hides the dads grid and shows About + Submit only. Launch date: `assets/site-config.js` → `dadsArchiveLaunch` (default **2026-08-07**).
 
 ## Home grid density
 
@@ -52,8 +56,10 @@ Production **`main`** still serves the coming-soon landing page.
 
 ## Submit form
 
-1. **Built-in:** replace `YOUR_FORM_ID` in `submit.html` with [Formspree](https://formspree.io) or Netlify Forms endpoint
-2. Curator SOP (child face blur, approval): `SUBMIT_WORKFLOW.md`
+1. **Formspree:** `https://formspree.io/f/mbdnweyz` (configured in `submit.html`)
+2. **8-step wizard** + post-submit thank-you (not a numbered step); logic in `assets/site.js`
+3. Curator SOP (child face blur, approval): `SUBMIT_WORKFLOW.md`
+4. **Formspree → Sanity pipeline (WIP):** `SANITY_PIPELINE.md`, `../sanity/`, `../workers/formspree-to-sanity/`
 
 ### Formspree / Airtable field names
 

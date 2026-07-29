@@ -6,6 +6,28 @@
   const PAGE_FADE_MS = 1000;
   const OVERLAY_FADE_MS = 1000;
 
+  function getDaddaConfig() {
+    return window.DADDA_CONFIG || {};
+  }
+
+  function isDadsArchiveLive() {
+    const launch = getDaddaConfig().dadsArchiveLaunch;
+    if (!launch) return true;
+    const launchDate = new Date(`${launch}T00:00:00`);
+    if (Number.isNaN(launchDate.getTime())) return true;
+    return Date.now() >= launchDate.getTime();
+  }
+
+  function initPrelaunchHome() {
+    document.body.classList.add("home-prelaunch");
+    const prelaunch = document.getElementById("home-prelaunch");
+    const grid = document.getElementById("archive-grid");
+    const densityToggle = document.getElementById("density-toggle");
+    if (prelaunch) prelaunch.hidden = false;
+    if (grid) grid.hidden = true;
+    if (densityToggle) densityToggle.hidden = true;
+  }
+
   function homeUrl(params = {}) {
     const url = new URL("index.html", window.location.href);
     url.searchParams.delete("about");
@@ -16,6 +38,59 @@
       url.searchParams.set(key, value ?? "");
     });
     return `${url.pathname}${url.search}${url.hash}`;
+  }
+
+  function buildProfileShareUrl(slug, imageIndex = 0) {
+    const url = new URL("index.html", window.location.href);
+    url.searchParams.set("viewer", slug);
+    if (Number.isInteger(imageIndex) && imageIndex > 0) {
+      url.searchParams.set("image", String(imageIndex));
+    } else {
+      url.searchParams.delete("image");
+    }
+    url.searchParams.delete("about");
+    return url.href;
+  }
+
+  async function shareProfile({ title, slug, imageIndex = 0 }) {
+    const url = buildProfileShareUrl(slug, imageIndex);
+    const shareTitle = title ? `${title} — dadda?` : "dadda?";
+    const shareText = "A story from dadda?, an exhibition about single fatherhood.";
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: shareTitle, text: shareText, url });
+        return { method: "share", url };
+      } catch (err) {
+        if (err?.name === "AbortError") return { method: "cancel", url };
+      }
+    }
+
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url);
+      return { method: "copy", url };
+    }
+
+    window.prompt("Copy this link:", url);
+    return { method: "prompt", url };
+  }
+
+  function showShareFeedback(button, message) {
+    if (!button) return;
+    const original = button.textContent;
+    button.textContent = message;
+    button.disabled = true;
+    window.setTimeout(() => {
+      button.textContent = original;
+      button.disabled = false;
+    }, 2000);
+  }
+
+  async function handleShareClick(button, { title, slug, imageIndex }) {
+    const result = await shareProfile({ title, slug, imageIndex });
+    if (result.method === "copy") {
+      showShareFeedback(button, "Link copied");
+    }
   }
 
   let archiveRevealObserver = null;
@@ -582,6 +657,7 @@
     const zoneNext = viewer.querySelector(".slideViewer__zone--next");
     const cursorHint = document.getElementById("viewer-cursor-hint");
     const closerBtn = document.getElementById("viewer-closer-btn");
+    const shareBtn = document.getElementById("viewer-share-btn");
     const detailEl = document.getElementById("viewer-detail");
     const detailBackdrop = document.getElementById("viewer-detail-backdrop");
     const detailCloseBtn = document.getElementById("viewer-detail-close");
@@ -736,6 +812,10 @@
       if (!currentDad) return;
       slideIndex = (nextIndex + currentDad.images.length) % currentDad.images.length;
       renderSlide();
+      if (isOpen) {
+        const nextUrl = viewerHistoryUrl(currentDad.slug, slideIndex, true);
+        window.history.replaceState({ viewer: currentDad.slug, image: slideIndex }, "", nextUrl);
+      }
     }
 
     function setViewerOpen(open, { syncHistory = true } = {}) {
@@ -865,6 +945,19 @@
         event.preventDefault();
         event.stopPropagation();
         setCloserOpen(!closerOpen);
+      });
+    }
+
+    if (shareBtn) {
+      shareBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!currentDad) return;
+        handleShareClick(shareBtn, {
+          title: currentDad.name,
+          slug: currentDad.slug,
+          imageIndex: slideIndex,
+        });
       });
     }
 
@@ -998,9 +1091,22 @@
       }, prefersReducedMotion() ? 0 : PAGE_FADE_MS);
     }
 
+    function syncDadPageUrl(imageIndex) {
+      if (!window.history?.replaceState) return;
+      const url = new URL(window.location.href);
+      url.searchParams.set("slug", dad.slug);
+      if (imageIndex > 0) {
+        url.searchParams.set("image", String(imageIndex));
+      } else {
+        url.searchParams.delete("image");
+      }
+      window.history.replaceState({ slug: dad.slug, image: imageIndex }, "", `${url.pathname}${url.search}${url.hash}`);
+    }
+
     function goToSlide(nextIndex) {
       slideIndex = (nextIndex + dad.images.length) % dad.images.length;
       renderSlides();
+      syncDadPageUrl(slideIndex);
     }
 
     function renderSlides() {
@@ -1014,10 +1120,20 @@
         </div>
         <h1 class="project-title">${dad.name}</h1>
         <p class="project-links">
+          <button type="button" id="dad-share-btn">Share</button>
           <button type="button" id="dad-info-btn">More Info</button>
         </p>`;
 
       counterEl.textContent = `${slideIndex + 1} of ${dad.images.length}`;
+
+      document.getElementById("dad-share-btn").addEventListener("click", (event) => {
+        event.preventDefault();
+        handleShareClick(event.currentTarget, {
+          title: dad.name,
+          slug: dad.slug,
+          imageIndex: slideIndex,
+        });
+      });
 
       document.getElementById("dad-info-btn").addEventListener("click", () => {
         setInfoOpen(true);
@@ -1060,7 +1176,7 @@
     const form = document.getElementById("submit-form");
     if (!form || document.body.dataset.page !== "submit") return;
 
-    const TOTAL_STEPS = 9;
+    const TOTAL_STEPS = 8;
     const steps = [...form.querySelectorAll(".submit-step[data-step]")].filter(
       (el) => el.dataset.step !== "success"
     );
@@ -1074,9 +1190,34 @@
     const progressFill = document.getElementById("submit-progress-fill");
     const progressBar = form.querySelector(".submit-wizard__progress-bar");
 
+    const SUBMIT_DRAFT_KEY = "dadda-submit-draft";
+    const SAVE_DRAFT_MS = 400;
+
     let currentStep = 1;
     let signatureMode = "typed";
     let releaseScrolled = false;
+    let saveDraftTimer = null;
+    let draftPersistenceEnabled = true;
+
+    function readDraftStorage() {
+      try {
+        return (
+          localStorage.getItem(SUBMIT_DRAFT_KEY) ||
+          sessionStorage.getItem(SUBMIT_DRAFT_KEY)
+        );
+      } catch (_err) {
+        return null;
+      }
+    }
+
+    function writeDraftStorage(value) {
+      try {
+        localStorage.setItem(SUBMIT_DRAFT_KEY, value);
+        sessionStorage.removeItem(SUBMIT_DRAFT_KEY);
+      } catch (_err) {
+        // Storage full or unavailable; skip silently.
+      }
+    }
 
     const signatureTyped = document.getElementById("signature_typed");
     const signatureTypeField = document.getElementById("signature_type");
@@ -1088,7 +1229,10 @@
     const releaseHint = document.getElementById("submit-release-hint");
     const releaseReadField = document.getElementById("legal_release_read");
     const fileInput = document.getElementById("supporting_images");
-    const fileListHint = document.getElementById("supporting-images-list");
+    const filePreviewList = document.getElementById("supporting-images-previews");
+    const submitIntro = document.getElementById("submit-intro");
+
+    const progressWrap = form.querySelector(".submit-wizard__progress");
 
     stepTotalEl.textContent = String(TOTAL_STEPS);
 
@@ -1165,17 +1309,60 @@
       return blockOk;
     }
 
+    function normalizePhoneInput(value) {
+      const digitsAndPlus = value.replace(/[^\d+]/g, "");
+      if (!digitsAndPlus) return "";
+
+      const digits = digitsAndPlus.replace(/\D/g, "");
+      if (!digits) return "+";
+
+      return `+${digits}`;
+    }
+
+    function isValidPhone(value) {
+      if (!value.trim()) return true;
+      return /^\+[1-9]\d{6,14}$/.test(value);
+    }
+
+    function initPhoneField() {
+      const phoneInput = form.querySelector("#phone");
+      if (!phoneInput) return;
+
+      phoneInput.addEventListener("focus", () => {
+        if (!phoneInput.value) phoneInput.value = "+";
+      });
+
+      phoneInput.addEventListener("input", () => {
+        const normalized = normalizePhoneInput(phoneInput.value);
+        if (phoneInput.value !== normalized) {
+          phoneInput.value = normalized;
+        }
+        showError("phone", false);
+      });
+
+      phoneInput.addEventListener("blur", () => {
+        if (phoneInput.value === "+") {
+          phoneInput.value = "";
+        }
+      });
+    }
+
     function validateStep(step) {
       let valid = true;
 
       if (step === 1) {
         const name = form.querySelector("#full_legal_name");
         const email = form.querySelector("#email");
+        const phone = form.querySelector("#phone");
         const nameOk = Boolean(name?.value.trim());
         const emailOk = Boolean(email?.value.trim()) && email.validity.valid;
+        const phoneValue = phone?.value.trim() || "";
+        const phoneOk = isValidPhone(phoneValue);
         showError("full_legal_name", !nameOk);
         showError("email", !emailOk);
-        if (!nameOk || !emailOk) valid = false;
+        showError("phone", !phoneOk);
+        phone?.closest(".submit-field")?.classList.toggle("is-invalid", !phoneOk);
+        if (!nameOk || !emailOk || !phoneOk) valid = false;
       }
 
       if (step === 4) {
@@ -1223,6 +1410,188 @@
       return !pixelBuffer.some((color) => color !== 0);
     }
 
+    function collectDraftFields() {
+      const fields = {};
+      form.querySelectorAll("input, textarea, select").forEach((el) => {
+        const { name, type } = el;
+        if (!name || type === "file") return;
+
+        if (type === "checkbox") {
+          if (!fields[name]) fields[name] = [];
+          if (el.checked) fields[name].push(el.value);
+          return;
+        }
+
+        if (type === "radio") {
+          if (el.checked) fields[name] = el.value;
+          return;
+        }
+
+        fields[name] = el.value;
+      });
+      return fields;
+    }
+
+    function saveDraft() {
+      if (!draftPersistenceEnabled) return;
+      try {
+        const payload = {
+          step: currentStep,
+          signatureMode,
+          releaseScrolled,
+          fields: collectDraftFields(),
+        };
+        if (signatureMode === "draw" && signatureCanvas && !isCanvasBlank(signatureCanvas)) {
+          payload.signatureImage = signatureCanvas.toDataURL("image/png");
+        } else if (signatureImageField?.value) {
+          payload.signatureImage = signatureImageField.value;
+        }
+        writeDraftStorage(JSON.stringify(payload));
+      } catch (_err) {
+        // Storage full or unavailable; skip silently.
+      }
+    }
+
+    function flushSaveDraft() {
+      if (!draftPersistenceEnabled) return;
+      clearTimeout(saveDraftTimer);
+      saveDraftTimer = null;
+      saveDraft();
+    }
+
+    function scheduleSaveDraft() {
+      if (!draftPersistenceEnabled) return;
+      clearTimeout(saveDraftTimer);
+      saveDraftTimer = setTimeout(saveDraft, SAVE_DRAFT_MS);
+    }
+
+    function clearDraft() {
+      try {
+        localStorage.removeItem(SUBMIT_DRAFT_KEY);
+        sessionStorage.removeItem(SUBMIT_DRAFT_KEY);
+      } catch (_err) {
+        // ignore
+      }
+    }
+
+    function restoreDraftFields(fields) {
+      if (!fields || typeof fields !== "object") return;
+
+      Object.entries(fields).forEach(([name, value]) => {
+        const group = form.querySelectorAll(`[name="${CSS.escape(name)}"]`);
+        if (!group.length) return;
+
+        const first = group[0];
+        if (first.type === "checkbox") {
+          const checked = Array.isArray(value) ? value : [];
+          group.forEach((el) => {
+            el.checked = checked.includes(el.value);
+          });
+          return;
+        }
+
+        if (first.type === "radio") {
+          group.forEach((el) => {
+            el.checked = el.value === value;
+          });
+          return;
+        }
+
+        if (group.length === 1) {
+          group[0].value = value;
+        }
+      });
+    }
+
+    function setSignatureMode(mode) {
+      signatureMode = mode;
+      signatureTypeField.value = mode;
+      form.querySelectorAll(".submit-signature__tab").forEach((t) => {
+        const active = t.dataset.signatureMode === mode;
+        t.classList.toggle("active", active);
+        t.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      form.querySelectorAll("[data-signature-panel]").forEach((panel) => {
+        panel.hidden = panel.dataset.signaturePanel !== mode;
+      });
+      if (mode === "typed") {
+        signatureTyped.setAttribute("name", "signature");
+        signatureImageField.value = "";
+      } else {
+        signatureTyped.removeAttribute("name");
+      }
+    }
+
+    function restoreDraft() {
+      const raw = readDraftStorage();
+      if (!raw) return false;
+
+      let draft;
+      try {
+        draft = JSON.parse(raw);
+      } catch (_err) {
+        clearDraft();
+        return false;
+      }
+
+      const step = Math.min(Number(draft.step), TOTAL_STEPS);
+      if (!Number.isInteger(step) || step < 1) {
+        clearDraft();
+        return false;
+      }
+
+      restoreDraftFields(draft.fields);
+
+      if (draft.signatureMode === "typed" || draft.signatureMode === "draw") {
+        setSignatureMode(draft.signatureMode);
+      }
+
+      if (draft.signatureMode === "draw" && draft.signatureImage && signatureCanvas) {
+        const ctx = signatureCanvas.getContext("2d");
+        const img = new Image();
+        img.onload = () => {
+          ctx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+          ctx.drawImage(img, 0, 0);
+          signatureImageField.value = draft.signatureImage;
+        };
+        img.src = draft.signatureImage;
+      }
+
+      if (draft.releaseScrolled) {
+        releaseScrolled = true;
+      }
+
+      syncPromptOptions();
+      goToStep(step);
+      return true;
+    }
+
+    function showSubmissionSuccess() {
+      draftPersistenceEnabled = false;
+      clearTimeout(saveDraftTimer);
+      saveDraftTimer = null;
+      steps.forEach((stepEl) => {
+        stepEl.hidden = true;
+      });
+      if (successStep) {
+        successStep.hidden = false;
+      }
+      if (progressWrap) {
+        progressWrap.hidden = true;
+      }
+      if (submitIntro) {
+        submitIntro.hidden = true;
+      }
+      prevBtn.hidden = true;
+      nextBtn.hidden = true;
+      submitBtn.hidden = true;
+      nav.hidden = true;
+      nav.setAttribute("aria-hidden", "true");
+      document.body.classList.add("is-submit-success");
+      clearDraft();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     function updateUI() {
       steps.forEach((stepEl) => {
         const stepNum = Number(stepEl.dataset.step);
@@ -1247,8 +1616,21 @@
     }
 
     function goToStep(step) {
+      const cropActive =
+        (cropOverlay && cropOverlay.hidden === false) ||
+        cropQueue.length > 0 ||
+        recropBackup ||
+        currentCropFile;
+      if (cropActive) {
+        cancelCropFlow();
+      }
+
       currentStep = Math.max(1, Math.min(TOTAL_STEPS, step));
       updateUI();
+      if (currentStep === 5) {
+        syncSupportingFilesUI();
+      }
+      saveDraft();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1267,22 +1649,8 @@
 
     form.querySelectorAll(".submit-signature__tab").forEach((tab) => {
       tab.addEventListener("click", () => {
-        signatureMode = tab.dataset.signatureMode;
-        signatureTypeField.value = signatureMode;
-        form.querySelectorAll(".submit-signature__tab").forEach((t) => {
-          const active = t === tab;
-          t.classList.toggle("active", active);
-          t.setAttribute("aria-selected", active ? "true" : "false");
-        });
-        form.querySelectorAll("[data-signature-panel]").forEach((panel) => {
-          panel.hidden = panel.dataset.signaturePanel !== signatureMode;
-        });
-        if (signatureMode === "typed") {
-          signatureTyped.setAttribute("name", "signature");
-          signatureImageField.value = "";
-        } else {
-          signatureTyped.removeAttribute("name");
-        }
+        setSignatureMode(tab.dataset.signatureMode);
+        scheduleSaveDraft();
       });
     });
 
@@ -1329,6 +1697,7 @@
 
       function endDraw() {
         drawing = false;
+        scheduleSaveDraft();
       }
 
       signatureCanvas.addEventListener("mousedown", startDraw);
@@ -1342,10 +1711,14 @@
       signatureClear?.addEventListener("click", () => {
         ctx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
         signatureImageField.value = "";
+        scheduleSaveDraft();
       });
     }
 
-    releaseEl?.addEventListener("scroll", updateReleaseScrollUI, { passive: true });
+    releaseEl?.addEventListener("scroll", () => {
+      updateReleaseScrollUI();
+      scheduleSaveDraft();
+    }, { passive: true });
     window.addEventListener("resize", () => {
       if (currentStep === 7) updateReleaseScrollUI();
     });
@@ -1357,6 +1730,7 @@
           if (entry.isIntersecting) {
             releaseScrolled = true;
             updateReleaseScrollUI();
+            scheduleSaveDraft();
           }
         },
         { root: releaseEl, threshold: 1 }
@@ -1364,35 +1738,1124 @@
       releaseObserver.observe(releaseEnd);
     }
 
+    function initCountrySelect() {
+      const countrySelect = form.querySelector("#country_of_residence");
+      const countries = window.DADDA_COUNTRIES;
+      if (!countrySelect || countrySelect.tagName !== "SELECT" || !Array.isArray(countries)) return;
+
+      const preferred = "United States";
+      const ordered = [preferred, ...countries.filter((country) => country !== preferred)];
+
+      ordered.forEach((country) => {
+        const option = document.createElement("option");
+        option.value = country;
+        option.textContent = country;
+        countrySelect.appendChild(option);
+      });
+    }
+
+    initPhoneField();
+    initCountrySelect();
+
+    form.addEventListener("input", scheduleSaveDraft);
+    form.addEventListener("change", scheduleSaveDraft);
+
+    window.addEventListener("pagehide", flushSaveDraft);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") flushSaveDraft();
+    });
+
     form.querySelectorAll("[data-response-prompt]").forEach((select) => {
       select.addEventListener("change", syncPromptOptions);
     });
     syncPromptOptions();
 
-    fileInput?.addEventListener("change", () => {
-      if (!fileListHint) return;
-      const names = [...(fileInput.files || [])].map((f) => f.name);
-      fileListHint.textContent = names.length
-        ? `${names.length} file(s) selected: ${names.join(", ")}`
-        : "";
+    const MAX_SUPPORTING_FILES = 5;
+    const MAX_SUPPORTING_FILE_BYTES = 8 * 1024 * 1024;
+    const MAX_SUPPORTING_TOTAL_BYTES = 30 * 1024 * 1024;
+    const MAX_SUPPORTING_FILE_LABEL = "8 MB";
+    const MAX_SUPPORTING_TOTAL_LABEL = "30 MB";
+    let selectedSupportingFiles = [];
+    const supportingOriginalFiles = new Map();
+    const supportingCropStates = new Map();
+    const supportingPreviewUrls = new Map();
+    const supportingPreviewFiles = new Map();
+    let recropBackup = null;
+    let pendingCropRestore = null;
+    let suppressSupportingInputChange = false;
+
+    const supportingFileErrors = {
+      size: `Each image must be under ${MAX_SUPPORTING_FILE_LABEL}.`,
+      count: `You can upload up to ${MAX_SUPPORTING_FILES} images total.`,
+      total: `Combined uploads must stay under ${MAX_SUPPORTING_TOTAL_LABEL}.`,
+      generic: "Please try a different image.",
+    };
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function filesAreSame(a, b) {
+      return a.name === b.name && a.size === b.size && a.lastModified === b.lastModified;
+    }
+
+    function validateSupportingFiles(fileList) {
+      const files = [...(fileList || [])];
+      if (!files.length) {
+        return { valid: true, files: [], message: "" };
+      }
+
+      if (files.length > MAX_SUPPORTING_FILES) {
+        return {
+          valid: false,
+          files: [],
+          message: supportingFileErrors.count,
+        };
+      }
+
+      const oversized = files.find((file) => file.size > MAX_SUPPORTING_FILE_BYTES);
+      if (oversized) {
+        return {
+          valid: false,
+          files: [],
+          message: supportingFileErrors.size,
+        };
+      }
+
+      const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+      if (totalBytes > MAX_SUPPORTING_TOTAL_BYTES) {
+        return {
+          valid: false,
+          files: [],
+          message: supportingFileErrors.total,
+        };
+      }
+
+      return { valid: true, files, message: "" };
+    }
+
+    function addSupportingFiles(existing, incoming) {
+      const merged = [...existing];
+      const skipped = [];
+
+      for (const file of incoming) {
+        if (merged.some((existingFile) => filesAreSame(existingFile, file))) {
+          continue;
+        }
+
+        if (merged.length >= MAX_SUPPORTING_FILES) {
+          skipped.push({ file, reason: "count" });
+          continue;
+        }
+
+        if (file.size > MAX_SUPPORTING_FILE_BYTES) {
+          skipped.push({ file, reason: "size" });
+          continue;
+        }
+
+        const nextTotal = merged.reduce((sum, existingFile) => sum + existingFile.size, 0) + file.size;
+        if (nextTotal > MAX_SUPPORTING_TOTAL_BYTES) {
+          skipped.push({ file, reason: "total" });
+          continue;
+        }
+
+        merged.push(file);
+      }
+
+      return { files: merged, skipped };
+    }
+
+    const CROP_RATIOS = {
+      "4-5": { w: 4, h: 5 },
+      "7-5": { w: 7, h: 5 },
+    };
+    const CROP_EXPORT_LONG_EDGE = 2000;
+    const CROP_FRAME_MIN = 140;
+    const CROP_FRAME_MAX = 320;
+    const CROP_FRAME_DEFAULT = 256;
+    const cropOverlay = document.getElementById("submit-crop");
+    const cropStage = document.getElementById("submit-crop-stage");
+    const cropFrame = document.getElementById("submit-crop-frame");
+    const cropImage = document.getElementById("submit-crop-image");
+    const cropProgress = document.getElementById("submit-crop-progress");
+    const cropZoomInput = document.getElementById("submit-crop-zoom");
+    const cropApplyBtn = document.getElementById("submit-crop-apply");
+    const cropRotateBtn = document.getElementById("submit-crop-rotate");
+    const cropCloseBtn = document.getElementById("submit-crop-close");
+    const cropCanvas = document.createElement("canvas");
+    let cropQueue = [];
+    let cropBatchTotal = 0;
+    let currentCropFile = null;
+    let cropRatioKey = "4-5";
+    let cropFrameW = CROP_FRAME_DEFAULT;
+    let cropFrameH = Math.round(CROP_FRAME_DEFAULT / (4 / 5));
+    let cropFrameX = 0;
+    let cropFrameY = 0;
+    let cropBaseScale = 1;
+    let cropZoom = 1;
+    let imageX = 0;
+    let imageY = 0;
+    let cropObjectUrl = null;
+    let cropDragMode = null;
+    let cropResizeHandle = null;
+    let cropDragStart = { x: 0, y: 0, frameX: 0, frameY: 0 };
+    let cropResizeStart = {
+      x: 0,
+      y: 0,
+      width: CROP_FRAME_DEFAULT,
+      height: Math.round(CROP_FRAME_DEFAULT / (4 / 5)),
+      frameX: 0,
+      frameY: 0,
+    };
+    let pendingCropErrors = [];
+
+    function getCropAspect() {
+      const ratio = CROP_RATIOS[cropRatioKey];
+      return ratio.w / ratio.h;
+    }
+
+    function getStageSize() {
+      return {
+        w: cropStage?.clientWidth || 0,
+        h: cropStage?.clientHeight || 0,
+      };
+    }
+
+    function getCropFrameMax() {
+      const stage = getStageSize();
+      const img = getImageBounds();
+      let maxW = Math.min(stage.w || CROP_FRAME_MAX, CROP_FRAME_MAX);
+      if (img) maxW = Math.min(maxW, img.w);
+      return Math.max(CROP_FRAME_MIN, maxW);
+    }
+
+    function getDisplayScale() {
+      return cropBaseScale * cropZoom;
+    }
+
+    function applyFrameGeometry() {
+      if (!cropFrame) return;
+      cropFrameW = Math.round(cropFrameW);
+      cropFrameH = Math.round(cropFrameW / getCropAspect());
+      cropFrame.style.width = `${cropFrameW}px`;
+      cropFrame.style.height = `${cropFrameH}px`;
+      cropFrame.style.left = `${cropFrameX}px`;
+      cropFrame.style.top = `${cropFrameY}px`;
+      cropFrame.dataset.ratio = cropRatioKey;
+    }
+
+    function getImageBounds() {
+      if (!cropImage?.naturalWidth) return null;
+      const scale = getDisplayScale();
+      return {
+        x: imageX,
+        y: imageY,
+        w: cropImage.naturalWidth * scale,
+        h: cropImage.naturalHeight * scale,
+      };
+    }
+
+    function positionImageCentered() {
+      const stage = getStageSize();
+      if (!cropImage?.naturalWidth || !stage.w) return;
+
+      const scale = getDisplayScale();
+      const imgW = cropImage.naturalWidth * scale;
+      const imgH = cropImage.naturalHeight * scale;
+      imageX = (stage.w - imgW) / 2;
+      imageY = (stage.h - imgH) / 2;
+    }
+
+    function clampFrameBounds() {
+      const stage = getStageSize();
+      const img = getImageBounds();
+      if (!stage.w || !img) return;
+
+      const maxW = Math.max(
+        CROP_FRAME_MIN,
+        Math.min(getCropFrameMax(), img.w, stage.w)
+      );
+      cropFrameW = Math.max(CROP_FRAME_MIN, Math.min(cropFrameW, maxW));
+      cropFrameH = Math.round(cropFrameW / getCropAspect());
+
+      if (cropFrameH > img.h) {
+        cropFrameH = Math.round(img.h);
+        cropFrameW = Math.round(cropFrameH * getCropAspect());
+      }
+      if (cropFrameH > stage.h) {
+        cropFrameH = stage.h;
+        cropFrameW = Math.round(cropFrameH * getCropAspect());
+      }
+
+      const minX = Math.max(0, img.x);
+      const maxX = Math.min(stage.w - cropFrameW, img.x + img.w - cropFrameW);
+      const minY = Math.max(0, img.y);
+      const maxY = Math.min(stage.h - cropFrameH, img.y + img.h - cropFrameH);
+
+      if (minX <= maxX) {
+        cropFrameX = Math.max(minX, Math.min(cropFrameX, maxX));
+      } else {
+        cropFrameX = img.x + (img.w - cropFrameW) / 2;
+      }
+
+      if (minY <= maxY) {
+        cropFrameY = Math.max(minY, Math.min(cropFrameY, maxY));
+      } else {
+        cropFrameY = img.y + (img.h - cropFrameH) / 2;
+      }
+    }
+
+    function layoutCropImage() {
+      if (!cropImage?.naturalWidth) return;
+
+      cropZoom = Math.max(1, cropZoom);
+      if (cropZoomInput) cropZoomInput.value = String(cropZoom);
+      clampFrameBounds();
+      applyFrameGeometry();
+      const scale = getDisplayScale();
+      cropImage.style.width = `${cropImage.naturalWidth * scale}px`;
+      cropImage.style.height = `${cropImage.naturalHeight * scale}px`;
+      cropImage.style.left = `${imageX}px`;
+      cropImage.style.top = `${imageY}px`;
+      cropImage.style.transform = "";
+    }
+
+    function centerFrameOnImage() {
+      const img = getImageBounds();
+      if (!img) return;
+      cropFrameX = Math.round(img.x + (img.w - cropFrameW) / 2);
+      cropFrameY = Math.round(img.y + (img.h - cropFrameH) / 2);
+      clampFrameBounds();
+    }
+
+    function captureCropState() {
+      const metrics = getCropExportMetrics();
+      if (!metrics) return null;
+      return {
+        ratioKey: cropRatioKey,
+        zoom: cropZoom,
+        sx: metrics.sx,
+        sy: metrics.sy,
+        sw: metrics.sw,
+        sh: metrics.sh,
+      };
+    }
+
+    function applyCropRestore(state) {
+      const stage = getStageSize();
+      const nw = cropImage.naturalWidth;
+      const nh = cropImage.naturalHeight;
+      if (!stage.w || !stage.h || !nw || !nh || !state) return false;
+
+      cropRatioKey = state.ratioKey === "7-5" ? "7-5" : "4-5";
+      cropZoom = Math.max(1, Number(state.zoom) || 1);
+      if (cropZoomInput) cropZoomInput.value = String(cropZoom);
+
+      cropBaseScale = Math.min(stage.w / nw, stage.h / nh);
+      positionImageCentered();
+
+      const scale = getDisplayScale();
+      cropFrameW = Math.round(state.sw * scale);
+      cropFrameH = Math.round(state.sh * scale);
+      cropFrameX = Math.round(imageX + state.sx * scale);
+      cropFrameY = Math.round(imageY + state.sy * scale);
+
+      clampFrameBounds();
+      layoutCropImage();
+      return true;
+    }
+
+    function initCropLayout() {
+      if (!cropStage || !cropImage?.naturalWidth) return;
+
+      const stage = getStageSize();
+      if (!stage.w || !stage.h) {
+        window.requestAnimationFrame(initCropLayout);
+        return;
+      }
+
+      if (pendingCropRestore && applyCropRestore(pendingCropRestore)) {
+        pendingCropRestore = null;
+        return;
+      }
+      pendingCropRestore = null;
+
+      const nw = cropImage.naturalWidth;
+      const nh = cropImage.naturalHeight;
+      cropRatioKey = "4-5";
+      cropZoom = 1;
+      if (cropZoomInput) cropZoomInput.value = "1";
+
+      cropBaseScale = Math.min(stage.w / nw, stage.h / nh);
+      positionImageCentered();
+
+      cropFrameW = Math.min(CROP_FRAME_DEFAULT, getCropFrameMax());
+      cropFrameH = Math.round(cropFrameW / getCropAspect());
+      centerFrameOnImage();
+      layoutCropImage();
+    }
+
+    function resetCropTransform() {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(initCropLayout);
+      });
+    }
+
+    function rotateCropAspect() {
+      const centerX = cropFrameX + cropFrameW / 2;
+      const centerY = cropFrameY + cropFrameH / 2;
+      cropRatioKey = cropRatioKey === "4-5" ? "7-5" : "4-5";
+      cropFrameH = Math.round(cropFrameW / getCropAspect());
+      cropFrameX = Math.round(centerX - cropFrameW / 2);
+      cropFrameY = Math.round(centerY - cropFrameH / 2);
+      clampFrameBounds();
+      layoutCropImage();
+    }
+
+    function getCropExportMetrics() {
+      if (!cropImage?.naturalWidth) return null;
+      const scale = getDisplayScale();
+      const nw = cropImage.naturalWidth;
+      const nh = cropImage.naturalHeight;
+      let sx = (cropFrameX - imageX) / scale;
+      let sy = (cropFrameY - imageY) / scale;
+      let sw = cropFrameW / scale;
+      let sh = cropFrameH / scale;
+
+      sx = Math.max(0, sx);
+      sy = Math.max(0, sy);
+      sw = Math.min(sw, nw - sx);
+      sh = Math.min(sh, nh - sy);
+
+      if (sw <= 0 || sh <= 0) return null;
+
+      return { scale, sx, sy, sw, sh };
+    }
+
+    function revokeCropObjectUrl() {
+      if (!cropObjectUrl) return;
+      URL.revokeObjectURL(cropObjectUrl);
+      cropObjectUrl = null;
+    }
+
+    function closeCropModal() {
+      if (!cropOverlay) return;
+      onCropPointerEnd();
+      cropOverlay.hidden = true;
+      cropOverlay.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      cropDragMode = null;
+      cropResizeHandle = null;
+      currentCropFile = null;
+      revokeCropObjectUrl();
+      if (cropImage) {
+        cropImage.removeAttribute("src");
+        cropImage.style.width = "";
+        cropImage.style.height = "";
+        cropImage.style.left = "";
+        cropImage.style.top = "";
+        cropImage.style.transform = "";
+      }
+      cropStage?.classList.remove("is-dragging", "is-resizing");
+    }
+
+    function finishCropQueue() {
+      closeCropModal();
+      pendingCropErrors = [];
+    }
+
+    function cancelCropFlow() {
+      if (recropBackup) {
+        const { file, originalSource, index } = recropBackup;
+        const next = [...selectedSupportingFiles];
+        const restoreAt = Number.isInteger(index)
+          ? Math.min(Math.max(index, 0), next.length)
+          : next.length;
+        next.splice(restoreAt, 0, file);
+        selectedSupportingFiles = next;
+        if (originalSource) {
+          supportingOriginalFiles.set(filePreviewKey(file), originalSource);
+        }
+        recropBackup = null;
+        syncSupportingFilesUI();
+      }
+      cropQueue = [];
+      cropBatchTotal = 0;
+      pendingCropErrors = [];
+      finishCropQueue();
+    }
+
+    function openCropModal(file) {
+      if (!cropOverlay || !cropImage || !file) return;
+
+      currentCropFile = file;
+      revokeCropObjectUrl();
+      cropObjectUrl = URL.createObjectURL(file);
+      cropImage.src = cropObjectUrl;
+
+      const current = cropBatchTotal - cropQueue.length;
+      if (cropProgress) {
+        cropProgress.textContent =
+          cropBatchTotal > 1
+            ? `Image ${current} of ${cropBatchTotal}. Drag the crop box to reposition, drag corners to resize, rotate for landscape.`
+            : "Drag the crop box to reposition, drag corners to resize, rotate for landscape.";
+      }
+
+      cropOverlay.hidden = false;
+      cropOverlay.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+
+      const onLoad = () => {
+        cropImage.removeEventListener("load", onLoad);
+        resetCropTransform();
+      };
+
+      if (cropImage.complete && cropImage.naturalWidth) {
+        onLoad();
+      } else {
+        cropImage.addEventListener("load", onLoad);
+      }
+    }
+
+    function exportCroppedFile() {
+      return new Promise((resolve, reject) => {
+        const metrics = getCropExportMetrics();
+        const ratio = CROP_RATIOS[cropRatioKey];
+        if (!metrics || !ratio || !cropImage) {
+          reject(new Error("Crop unavailable"));
+          return;
+        }
+
+        let exportW;
+        let exportH;
+        if (ratio.w >= ratio.h) {
+          exportW = CROP_EXPORT_LONG_EDGE;
+          exportH = Math.round(CROP_EXPORT_LONG_EDGE * (ratio.h / ratio.w));
+        } else {
+          exportH = CROP_EXPORT_LONG_EDGE;
+          exportW = Math.round(CROP_EXPORT_LONG_EDGE * (ratio.w / ratio.h));
+        }
+
+        cropCanvas.width = exportW;
+        cropCanvas.height = exportH;
+        const ctx = cropCanvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Crop unavailable"));
+          return;
+        }
+
+        ctx.drawImage(
+          cropImage,
+          metrics.sx,
+          metrics.sy,
+          metrics.sw,
+          metrics.sh,
+          0,
+          0,
+          exportW,
+          exportH
+        );
+
+        cropCanvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              reject(new Error("Crop failed"));
+              return;
+            }
+            const baseName = currentCropFile?.name.replace(/\.[^.]+$/, "") || "image";
+            resolve(
+              new File([blob], `${baseName}.jpg`, {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+              })
+            );
+          },
+          "image/jpeg",
+          0.9
+        );
+      });
+    }
+
+    function processNextCrop() {
+      if (!cropQueue.length) {
+        finishCropQueue();
+        return;
+      }
+      openCropModal(cropQueue.shift());
+    }
+
+    function enqueueFilesForCrop(incoming) {
+      pendingCropErrors = [];
+      const available = MAX_SUPPORTING_FILES - selectedSupportingFiles.length;
+
+      if (available <= 0) {
+        syncSupportingFilesUI({ errorMessage: supportingFileErrors.count });
+        return;
+      }
+
+      const accepted = [];
+      const skipped = [];
+
+      incoming.forEach((file) => {
+        if (accepted.length >= available) {
+          skipped.push({ file, reason: "count" });
+          return;
+        }
+        if (!file.type.startsWith("image/")) {
+          skipped.push({ file, reason: "generic" });
+          return;
+        }
+        if (file.size > MAX_SUPPORTING_FILE_BYTES) {
+          skipped.push({ file, reason: "size" });
+          return;
+        }
+        accepted.push(file);
+      });
+
+      if (skipped.length) {
+        pendingCropErrors.push(skippedFilesMessage(skipped));
+      }
+
+      if (!accepted.length) {
+        syncSupportingFilesUI({ errorMessage: pendingCropErrors[0] || "" });
+        return;
+      }
+
+      cropQueue = accepted;
+      cropBatchTotal = accepted.length;
+      pendingCropRestore = null;
+      processNextCrop();
+    }
+
+    function getResizeDelta(clientX, clientY) {
+      const dx = clientX - cropResizeStart.x;
+      const dy = clientY - cropResizeStart.y;
+
+      switch (cropResizeHandle) {
+        case "se":
+          return (dx + dy) / 2;
+        case "nw":
+          return (-dx - dy) / 2;
+        case "ne":
+          return (dx - dy) / 2;
+        case "sw":
+          return (-dx + dy) / 2;
+        default:
+          return 0;
+      }
+    }
+
+    function applyFrameResize(clientX, clientY) {
+      const delta = getResizeDelta(clientX, clientY);
+      let newW = Math.round(
+        Math.max(CROP_FRAME_MIN, Math.min(getCropFrameMax(), cropResizeStart.width + delta))
+      );
+      let newH = Math.round(newW / getCropAspect());
+      let newX = cropResizeStart.frameX;
+      let newY = cropResizeStart.frameY;
+
+      switch (cropResizeHandle) {
+        case "nw":
+          newX = cropResizeStart.frameX + (cropResizeStart.width - newW);
+          newY = cropResizeStart.frameY + (cropResizeStart.height - newH);
+          break;
+        case "ne":
+          newY = cropResizeStart.frameY + (cropResizeStart.height - newH);
+          break;
+        case "sw":
+          newX = cropResizeStart.frameX + (cropResizeStart.width - newW);
+          break;
+        default:
+          break;
+      }
+
+      const stage = getStageSize();
+      const img = getImageBounds();
+      if (newH > stage.h) {
+        newH = stage.h;
+        newW = Math.round(newH * getCropAspect());
+      }
+      if (newW > stage.w) {
+        newW = stage.w;
+        newH = Math.round(newW / getCropAspect());
+      }
+      if (img) {
+        newW = Math.min(newW, img.w);
+        newH = Math.round(newW / getCropAspect());
+        if (newH > img.h) {
+          newH = img.h;
+          newW = Math.round(newH * getCropAspect());
+        }
+      }
+
+      cropFrameW = newW;
+      cropFrameX = newX;
+      cropFrameY = newY;
+      layoutCropImage();
+    }
+
+    function onCropPointerMove(event) {
+      if (!cropDragMode) return;
+
+      if (cropDragMode === "pan") {
+        cropFrameX = cropDragStart.frameX + (event.clientX - cropDragStart.x);
+        cropFrameY = cropDragStart.frameY + (event.clientY - cropDragStart.y);
+        layoutCropImage();
+        return;
+      }
+
+      if (cropDragMode === "resize") {
+        applyFrameResize(event.clientX, event.clientY);
+      }
+    }
+
+    function onCropPointerEnd() {
+      endCropInteraction();
+      document.removeEventListener("pointermove", onCropPointerMove);
+      document.removeEventListener("pointerup", onCropPointerEnd);
+      document.removeEventListener("pointercancel", onCropPointerEnd);
+    }
+
+    function startCropPointerSession() {
+      document.addEventListener("pointermove", onCropPointerMove);
+      document.addEventListener("pointerup", onCropPointerEnd);
+      document.addEventListener("pointercancel", onCropPointerEnd);
+    }
+
+    function endCropInteraction() {
+      cropDragMode = null;
+      cropResizeHandle = null;
+      cropStage?.classList.remove("is-dragging", "is-resizing");
+      cropFrame?.classList.remove("is-dragging");
+    }
+
+    cropFrame?.querySelectorAll(".submitCrop__handle").forEach((handle) => {
+      handle.addEventListener("pointerdown", (event) => {
+        if (cropOverlay?.hidden !== false) return;
+        event.preventDefault();
+        event.stopPropagation();
+        cropDragMode = "resize";
+        cropResizeHandle = handle.dataset.handle || "se";
+        cropResizeStart = {
+          x: event.clientX,
+          y: event.clientY,
+          width: cropFrameW,
+          height: cropFrameH,
+          frameX: cropFrameX,
+          frameY: cropFrameY,
+        };
+        cropStage?.classList.add("is-resizing");
+        try {
+          handle.setPointerCapture(event.pointerId);
+        } catch (_err) {
+          // ignore
+        }
+        startCropPointerSession();
+      });
     });
 
-    form.addEventListener("submit", (event) => {
-      if (currentStep !== TOTAL_STEPS) {
+    function startCropPan(event) {
+      if (cropOverlay?.hidden !== false) return;
+      if (event.target.closest(".submitCrop__handle")) return;
+
+      cropDragMode = "pan";
+      cropDragStart = {
+        x: event.clientX,
+        y: event.clientY,
+        frameX: cropFrameX,
+        frameY: cropFrameY,
+      };
+      cropStage?.classList.add("is-dragging");
+      cropFrame?.classList.add("is-dragging");
+      startCropPointerSession();
+      event.preventDefault();
+    }
+
+    cropFrame?.addEventListener("pointerdown", (event) => {
+      startCropPan(event);
+      event.stopPropagation();
+    });
+    cropStage?.addEventListener("pointerdown", startCropPan);
+
+    cropZoomInput?.addEventListener("input", () => {
+      cropZoom = Number(cropZoomInput.value) || 1;
+      positionImageCentered();
+      layoutCropImage();
+    });
+
+    cropRotateBtn?.addEventListener("click", rotateCropAspect);
+
+    cropCloseBtn?.addEventListener("click", cancelCropFlow);
+
+    cropApplyBtn?.addEventListener("click", async () => {
+      if (!currentCropFile) return;
+
+      cropApplyBtn.disabled = true;
+      const sourceFile = currentCropFile;
+      try {
+        layoutCropImage();
+        const cropState = captureCropState();
+        const cropped = await exportCroppedFile();
+        const recropIndex = recropBackup?.index;
+        let saved = false;
+
+        if (Number.isInteger(recropIndex)) {
+          const next = [...selectedSupportingFiles];
+          next.splice(recropIndex, 0, cropped);
+          const result = validateSupportingFiles(next);
+          if (!result.valid) {
+            pendingCropErrors.push(result.message || supportingFileErrors.generic);
+          } else {
+            selectedSupportingFiles = next;
+            saved = true;
+          }
+        } else {
+          const { files, skipped } = addSupportingFiles(selectedSupportingFiles, [cropped]);
+          selectedSupportingFiles = files;
+          if (skipped.length) {
+            pendingCropErrors.push(skippedFilesMessage(skipped));
+          } else {
+            saved = true;
+          }
+        }
+
+        if (saved) {
+          const croppedKey = filePreviewKey(cropped);
+          if (Number.isInteger(recropIndex) && recropBackup) {
+            const rootOriginal =
+              recropBackup.originalSource ||
+              supportingOriginalFiles.get(filePreviewKey(recropBackup.file));
+            if (rootOriginal) {
+              supportingOriginalFiles.set(croppedKey, rootOriginal);
+            }
+            supportingOriginalFiles.delete(filePreviewKey(recropBackup.file));
+            supportingCropStates.delete(filePreviewKey(recropBackup.file));
+          } else if (sourceFile) {
+            supportingOriginalFiles.set(croppedKey, sourceFile);
+          }
+          if (cropState) {
+            supportingCropStates.set(croppedKey, cropState);
+          }
+          recropBackup = null;
+        }
+        currentCropFile = null;
+        syncSupportingFilesUI({ errorMessage: pendingCropErrors[0] || "" });
+        processNextCrop();
+      } catch {
+        pendingCropErrors.push(supportingFileErrors.generic);
+        currentCropFile = null;
+        syncSupportingFilesUI({ errorMessage: pendingCropErrors[0] || "" });
+        processNextCrop();
+      } finally {
+        cropApplyBtn.disabled = false;
+      }
+    });
+
+    function skippedFilesMessage(skipped) {
+      if (!skipped.length) return "";
+
+      if (skipped.some((entry) => entry.reason === "size")) {
+        return supportingFileErrors.size;
+      }
+
+      if (skipped.some((entry) => entry.reason === "count")) {
+        return supportingFileErrors.count;
+      }
+
+      if (skipped.some((entry) => entry.reason === "total")) {
+        return supportingFileErrors.total;
+      }
+
+      return supportingFileErrors.generic;
+    }
+
+    function filePreviewKey(file) {
+      return `${file.name}-${file.size}-${file.lastModified}`;
+    }
+
+    function revokeSupportingPreviewUrls(exceptKeys = null) {
+      const keep = exceptKeys instanceof Set ? exceptKeys : null;
+      supportingPreviewUrls.forEach((url, key) => {
+        if (keep?.has(key)) return;
+        URL.revokeObjectURL(url);
+        supportingPreviewUrls.delete(key);
+        supportingPreviewFiles.delete(key);
+      });
+    }
+
+    function setSupportingPreviewUrl(key, file) {
+      const previousUrl = supportingPreviewUrls.get(key);
+      const previousFile = supportingPreviewFiles.get(key);
+      if (previousUrl && previousFile === file) {
+        return previousUrl;
+      }
+      if (previousUrl) URL.revokeObjectURL(previousUrl);
+      const url = URL.createObjectURL(file);
+      supportingPreviewUrls.set(key, url);
+      supportingPreviewFiles.set(key, file);
+      return url;
+    }
+
+    function removeSupportingFile(key) {
+      selectedSupportingFiles = selectedSupportingFiles.filter((file) => filePreviewKey(file) !== key);
+      supportingOriginalFiles.delete(key);
+      supportingCropStates.delete(key);
+      const previewUrl = supportingPreviewUrls.get(key);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        supportingPreviewUrls.delete(key);
+        supportingPreviewFiles.delete(key);
+      }
+      syncSupportingFilesUI();
+    }
+
+    function reopenCropForFile(key) {
+      if (cropOverlay?.hidden === false) return;
+
+      const croppedFile = selectedSupportingFiles.find((file) => filePreviewKey(file) === key);
+      if (!croppedFile) return;
+
+      const originalSource = supportingOriginalFiles.get(key) || null;
+      const cropState = supportingCropStates.get(key) || null;
+      const sourceFile = originalSource || croppedFile;
+
+      recropBackup = {
+        file: croppedFile,
+        originalSource,
+        cropStateKey: key,
+        index: selectedSupportingFiles.findIndex((file) => filePreviewKey(file) === key),
+      };
+
+      selectedSupportingFiles = selectedSupportingFiles.filter((file) => filePreviewKey(file) !== key);
+      syncSupportingFilesUI();
+
+      pendingCropRestore = cropState;
+      cropQueue = [];
+      cropBatchTotal = 1;
+      openCropModal(sourceFile);
+    }
+
+    function renderSupportingFilePreviews(files) {
+      if (!filePreviewList) return;
+
+      const nextKeys = new Set(files.map((file) => filePreviewKey(file)));
+      revokeSupportingPreviewUrls(nextKeys);
+      filePreviewList.textContent = "";
+
+      if (!files.length) {
+        filePreviewList.hidden = true;
+        return;
+      }
+
+      files.forEach((file) => {
+        const key = filePreviewKey(file);
+        const previewUrl = setSupportingPreviewUrl(key, file);
+
+        const item = document.createElement("li");
+        item.className = "submit-file-preview";
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "submit-file-preview__remove";
+        removeBtn.setAttribute("aria-label", "Remove image");
+        removeBtn.textContent = "X";
+        removeBtn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          removeSupportingFile(key);
+        });
+
+        const editBtn = document.createElement("button");
+        editBtn.type = "button";
+        editBtn.className = "submit-file-preview__edit";
+        editBtn.setAttribute("aria-label", "Edit crop");
+
+        const img = document.createElement("img");
+        img.alt = "Selected image preview";
+        img.className = "submit-file-preview__image protected-media";
+        img.decoding = "async";
+        img.draggable = false;
+        img.src = previewUrl;
+        img.addEventListener("load", () => {
+          if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+            item.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+          }
+        }, { once: true });
+
+        editBtn.appendChild(img);
+        editBtn.addEventListener("click", () => {
+          reopenCropForFile(key);
+        });
+
+        item.appendChild(removeBtn);
+        item.appendChild(editBtn);
+        filePreviewList.appendChild(item);
+      });
+
+      filePreviewList.hidden = false;
+    }
+
+    function applySupportingFilesToInput(files) {
+      if (!fileInput) return;
+      suppressSupportingInputChange = true;
+      try {
+        const transfer = new DataTransfer();
+        files.forEach((file) => transfer.items.add(file));
+        fileInput.files = transfer.files;
+      } finally {
+        window.setTimeout(() => {
+          suppressSupportingInputChange = false;
+        }, 0);
+      }
+    }
+
+    function updateSupportingFileButton() {
+      const chooseBtn = form.querySelector(".submit-file-btn");
+      if (!chooseBtn || !fileInput) return;
+
+      const count = selectedSupportingFiles.length;
+      const atMax = count >= MAX_SUPPORTING_FILES;
+
+      if (atMax) {
+        chooseBtn.textContent = "Maximum reached";
+        chooseBtn.classList.add("submit-file-btn--disabled");
+        chooseBtn.setAttribute("aria-disabled", "true");
+        return;
+      }
+
+      chooseBtn.classList.remove("submit-file-btn--disabled");
+      chooseBtn.removeAttribute("aria-disabled");
+      chooseBtn.textContent = count > 0 ? "Add more images" : "Choose images";
+    }
+
+    function syncSupportingFilesUI({ errorMessage = "" } = {}) {
+      if (!fileInput) return;
+
+      const fileField = fileInput.closest(".submit-field");
+      const fileError = form.querySelector('[data-error-for="supporting_images"]');
+      const result = validateSupportingFiles(selectedSupportingFiles);
+
+      applySupportingFilesToInput(selectedSupportingFiles);
+      updateSupportingFileButton();
+      renderSupportingFilePreviews(selectedSupportingFiles);
+
+      if (errorMessage) {
+        if (fileError) {
+          fileError.textContent = errorMessage;
+          fileError.hidden = false;
+        }
+        fileField?.classList.add("is-invalid");
+        fileField?.classList.remove("is-valid");
+      } else if (fileError) {
+        fileError.hidden = true;
+        fileField?.classList.remove("is-invalid");
+      }
+
+      if (!selectedSupportingFiles.length) {
+        if (!errorMessage) {
+          fileField?.classList.remove("is-valid");
+        }
+        return;
+      }
+
+      if (!errorMessage && result.valid) {
+        fileField?.classList.add("is-valid");
+      } else if (!result.valid && result.message && fileError) {
+        fileError.textContent = result.message;
+        fileError.hidden = false;
+        fileField?.classList.add("is-invalid");
+        fileField?.classList.remove("is-valid");
+      }
+    }
+
+    fileInput?.addEventListener("change", () => {
+      if (suppressSupportingInputChange) return;
+
+      const incoming = [...(fileInput.files || [])];
+
+      if (!incoming.length || (cropOverlay && cropOverlay.hidden === false)) return;
+
+      const alreadySelected =
+        incoming.length > 0 &&
+        incoming.every((file) =>
+          selectedSupportingFiles.some((existing) => filesAreSame(existing, file))
+        );
+
+      if (alreadySelected) return;
+
+      fileInput.value = "";
+      enqueueFilesForCrop(incoming);
+    });
+
+    form.querySelector(".submit-file-btn")?.addEventListener("click", (event) => {
+      if (selectedSupportingFiles.length >= MAX_SUPPORTING_FILES) {
         event.preventDefault();
         return;
       }
-      if (!validateStep(7)) {
+      if (cropOverlay && cropOverlay.hidden === false) {
         event.preventDefault();
+      }
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (currentStep !== TOTAL_STEPS) {
+        return;
+      }
+      if (selectedSupportingFiles.length) {
+        applySupportingFilesToInput(selectedSupportingFiles);
+        const fileResult = validateSupportingFiles(selectedSupportingFiles);
+        if (!fileResult.valid) {
+          syncSupportingFilesUI({ errorMessage: fileResult.message });
+          goToStep(5);
+          return;
+        }
+      }
+      if (!validateStep(7)) {
         goToStep(7);
         return;
       }
       if (signatureMode === "draw" && signatureCanvas && !isCanvasBlank(signatureCanvas)) {
         signatureImageField.value = signatureCanvas.toDataURL("image/png");
       }
+
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+
+        if (!response.ok) {
+          throw new Error("Submit failed");
+        }
+
+        showSubmissionSuccess();
+      } catch {
+        submitBtn.disabled = false;
+        window.alert("Something went wrong sending your submission. Please try again.");
+      }
     });
 
-    updateUI();
+    if (!restoreDraft()) {
+      updateUI();
+    }
+  }
+
+  function initSubmitHeaderScroll() {
+    if (document.body.dataset.page !== "submit") return;
+
+    const threshold = 20;
+
+    function update() {
+      document.body.classList.toggle("is-scrolled", window.scrollY > threshold);
+    }
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
   }
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -1403,9 +2866,12 @@
     initPageEnter();
     initAboutOverlay();
     initSubmitForm();
+    initSubmitHeaderScroll();
 
     const openViewer = initSlideViewer();
-    if (openViewer) {
+    if (document.body.dataset.page === "home" && !isDadsArchiveLive()) {
+      initPrelaunchHome();
+    } else if (openViewer) {
       initArchiveGrid(openViewer);
       initRandomShortcut(openViewer);
     }

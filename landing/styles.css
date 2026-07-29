@@ -39,6 +39,31 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+.landingNav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  gap: clamp(1.25rem, 4vw, 2rem);
+  padding: max(0.75rem, env(safe-area-inset-top, 0px)) 1rem 0.5rem;
+  font-family: var(--font-newsreader-text);
+  font-size: 0.8125rem;
+}
+
+.landingNav a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.landingNav a:hover,
+.landingNav a:focus-visible {
+  text-decoration: underline;
+  outline: 0;
+}
+
 .landing {
   position: fixed;
   inset: 0;

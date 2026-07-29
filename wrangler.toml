@@ -1,11 +1,6 @@
 # Cloudflare Pages — DADDA Exhibition
-# https://developers.cloudflare.com/pages/configuration/wrangler-configuration/
 #
-# Production (main branch) serves landing/ directly.
-# Preview deployments on dev branch serve site/ via scripts/build.sh.
-#
-# Manual deploy (landing only):
-#   npx wrangler pages deploy landing --project-name=dadda-exhibition
+# Production and preview both deploy site/ via scripts/build.sh (copied into landing/ at build time).
 
 name = "dadda-exhibition"
 pages_build_output_dir = "landing"

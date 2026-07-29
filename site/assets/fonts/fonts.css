@@ -15,6 +15,30 @@
 }
 
 @font-face {
+  font-family: "Newsreader Landing";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("Newsreader_60pt-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Newsreader Text";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("Newsreader_24pt-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Newsreader Text";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("Newsreader_24pt-Italic.ttf") format("truetype");
+}
+
+@font-face {
   font-family: "Newsreader";
   font-style: italic;
   font-weight: 400;

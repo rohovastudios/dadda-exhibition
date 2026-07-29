@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="assets/site.css?v=125" />
+  <link rel="stylesheet" href="assets/site.css?v=174" />
+  <link rel="stylesheet" href="assets/prelaunch-landing.css?v=2" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>dadda?</title>
@@ -24,6 +25,34 @@
 </header>
 
 <main class="homePage">
+  <div class="homeLanding" id="home-prelaunch" hidden>
+    <div class="landing__frame">
+      <div class="landing__footer">
+        <img
+          class="landing__logo protected-media"
+          src="assets/dadda-logo-landing.png"
+          alt="dadda?"
+          width="518"
+          height="96"
+          decoding="async"
+          draggable="false"
+        />
+        <p class="landing__tagline">
+          Exploring how <span class="landing__struck">single</span> fatherhood is carried.
+        </p>
+        <p class="homeLanding__cta">
+          <a href="about.html">Learn more.</a>
+          <a href="submit.html">Share your story.</a>
+        </p>
+      </div>
+    </div>
+    <div class="homeLanding__hero-wrap">
+      <div class="homeLanding__heroStack">
+        <p class="homeLanding__hero"><span class="homeLanding__hero-text">Does anybody get it right</span>?</p>
+        <p class="homeLanding__heroSoon">Exhibition and online archive coming August 7</p>
+      </div>
+    </div>
+  </div>
   <div class="archiveGrid" id="archive-grid" role="list" aria-label="Archive"></div>
 </main>
 
@@ -45,6 +74,7 @@
       <p class="slideViewer__caption" id="viewer-caption"></p>
       <p class="slideViewer__counter" id="viewer-counter"></p>
       <p class="slideViewer__actions">
+        <button type="button" class="slideViewer__shareBtn" id="viewer-share-btn">Share</button>
         <button type="button" class="slideViewer__closerBtn" id="viewer-closer-btn" aria-expanded="false">Get closer</button>
       </p>
     </div>
@@ -84,9 +114,8 @@
           from single fathers.
         </p>
         <p>
-          Digital submissions are currently open to single fathers who would like to share photographs,
-          written reflections, letters, voice recordings, or other personal materials. Selected
-          submissions may be included in the online presentation of <em class="dadda">dadda?</em>
+          Digital submissions are currently open to single fathers <a href="submit.html">here</a>.
+          Selected submissions may be included in the online presentation of <em class="dadda">dadda?</em>
         </p>
       </section>
 
@@ -130,7 +159,8 @@
   </div>
 </div>
 
+<script src="assets/site-config.js?v=1"></script>
 <script src="assets/dads.js?v=30"></script>
-<script src="assets/site.js?v=87"></script>
+<script src="assets/site.js?v=122"></script>
 </body>
 </html>
