@@ -1,8 +1,6 @@
 # Cloudflare Pages — DADDA Exhibition
-#
-# Production deploys site/ directly (prelaunch home until dadsArchiveLaunch in site-config.js).
-# scripts/build.sh still rsyncs site/ → landing/ for local parity and legacy landing previews.
+# Name must match the Pages project in the dashboard (daddaexhibition).
 
-name = "dadda-exhibition"
+name = "daddaexhibition"
 pages_build_output_dir = "site"
 compatibility_date = "2024-01-01"

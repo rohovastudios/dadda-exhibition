@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Cloudflare Pages sets CF_PAGES_BRANCH during Git-connected builds.
-# All branches deploy site/ (pre-launch home until dadsArchiveLaunch in site-config.js).
-# This rsync is ephemeral in CI — the committed landing/ folder in git is not modified.
+# Cloudflare Pages deploys site/ directly (see wrangler.toml pages_build_output_dir).
+# This script is a no-op for Git-connected builds; kept for local parity if needed.
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-rsync -a --delete "${ROOT}/site/" "${ROOT}/landing/"
-echo "Staged site/ → landing/ for ${CF_PAGES_BRANCH:-main}"
+if [ ! -f "${ROOT}/site/index.html" ]; then
+  echo "error: site/index.html missing" >&2
+  exit 1
+fi
+
+echo "Deploying site/ for ${CF_PAGES_BRANCH:-main} (${ROOT}/site)"
