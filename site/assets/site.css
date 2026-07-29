@@ -458,7 +458,6 @@ body[data-page="home"].home-prelaunch {
   --landing-ref-h: 1200;
   --landing-frame-h: max(100dvh, calc(100vw * var(--landing-ref-h) / var(--landing-ref-w)));
   --landing-frame-w: max(100vw, calc(100dvh * var(--landing-ref-w) / var(--landing-ref-h)));
-  --landing-hero-y: calc(600 / var(--landing-ref-h));
   --landing-hero-text-w: 480;
   overflow: hidden;
 }
@@ -495,9 +494,8 @@ body[data-page="home"].home-prelaunch .archiveGrid {
   inset: 0;
   z-index: 2;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding-top: calc((100% - var(--landing-frame-h)) / 2 + var(--landing-hero-y) * var(--landing-frame-h));
   padding-left: max(1rem, env(safe-area-inset-left, 0px));
   padding-right: max(1rem, env(safe-area-inset-right, 0px));
   pointer-events: none;
@@ -505,7 +503,6 @@ body[data-page="home"].home-prelaunch .archiveGrid {
 
 .homeLanding__heroStack {
   margin: 0;
-  transform: translateY(-50%);
   max-width: min(92vw, 36rem);
   text-align: center;
 }
@@ -586,7 +583,6 @@ body[data-page="home"].home-prelaunch .archiveGrid {
 
 @media (max-width: 768px) {
   body[data-page="home"].home-prelaunch {
-    --landing-hero-y: calc(337 / 675);
     --landing-hero-text-w: 560;
   }
 
