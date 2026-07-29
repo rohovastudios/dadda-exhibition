@@ -1,7 +1,8 @@
 # Cloudflare Pages — DADDA Exhibition
 #
-# Production and preview both deploy site/ via scripts/build.sh (copied into landing/ at build time).
+# Production deploys site/ directly (prelaunch home until dadsArchiveLaunch in site-config.js).
+# scripts/build.sh still rsyncs site/ → landing/ for local parity and legacy landing previews.
 
 name = "dadda-exhibition"
-pages_build_output_dir = "landing"
+pages_build_output_dir = "site"
 compatibility_date = "2024-01-01"
