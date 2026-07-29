@@ -1,6 +1,6 @@
 # dadda? — full site (dev)
 
-Tyler Mitchell–inspired structure with dadda? pink/serif art direction.
+Tyler Mitchell–inspired layout with dadda? serif typography on a clean white/neutral background. Pink paper texture is **production landing only** — not used on dev site pages.
 
 ## Pages
 
@@ -53,4 +53,31 @@ Production **`main`** still serves the coming-soon landing page.
 ## Submit form
 
 1. **Built-in:** replace `YOUR_FORM_ID` in `submit.html` with [Formspree](https://formspree.io) or Netlify Forms endpoint
-2. **JotForm:** uncomment embed block in `submit.html`
+2. Curator SOP (child face blur, approval): `SUBMIT_WORKFLOW.md`
+
+### Formspree / Airtable field names
+
+| Field | Name attribute |
+|-------|----------------|
+| Full legal name | `full_legal_name` |
+| Preferred name | `preferred_name` |
+| Email | `email` |
+| Phone | `phone` |
+| Country of residence | `country_of_residence` |
+| Preferred contact method | `preferred_contact_method` |
+| Remain anonymous | `remain_anonymous` |
+| Fatherhood relationship (multi) | `fatherhood_relationship[]` |
+| Children info | `children_info` |
+| Story response 1 prompt | `response_1_prompt` |
+| Story response 1 text | `response_1` |
+| Story response 2 prompt | `response_2_prompt` |
+| Story response 2 text | `response_2` |
+| Story response 3 prompt | `response_3_prompt` |
+| Story response 3 text | `response_3` |
+| Supporting images (multi file) | `supporting_images[]` |
+| Image descriptions | `image_descriptions` |
+| Consent checkboxes | `consent_18`, `consent_name_options`, `consent_privacy_edits`, `consent_children_not_shown`, `consent_child_photos_obscured`, `consent_rights`, `consent_usage`, `consent_voluntary` |
+| Signature (typed) | `signature` |
+| Signature (drawn PNG data URL) | `signature_image` |
+| Signature method | `signature_type` |
+| Follow-up interview (multi) | `follow_up_interview[]` |

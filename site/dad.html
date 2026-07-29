@@ -4,31 +4,32 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>dadda? — project</title>
-  <link rel="stylesheet" href="assets/site.css" />
+  <meta name="description" content="dadda? — An exhibition about single fatherhood." />
+  <meta name="theme-color" content="#ef426f" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="assets/site.css?v=107" />
+  <script>document.documentElement.classList.add("js");</script>
 </head>
 <body data-page="dad">
 
-<main class="dad-page">
-  <div class="dad-toolbar">
-    <div class="dad-toolbar-left">
-      <span id="dad-title"></span>
-    </div>
-    <div class="dad-toolbar-right">
-      <button type="button" id="toggle-slides">slides</button>
-      <button type="button" id="toggle-grid">grid</button>
-      <a href="index.html">close</a>
-    </div>
-  </div>
+<header class="project-header">
+  <a class="project-header__brand" href="index.html"><img class="site-brand__logo protected-media" src="assets/dadda-logo.png" alt="dadda?" width="2170" height="725" decoding="async" draggable="false" /></a>
+  <a class="project-header__close" href="index.html" aria-label="Close">X</a>
+</header>
 
-  <div class="dad-stage">
+<main class="dad-page">
+  <div id="dad-stage">
     <section id="dad-slides"></section>
-    <section id="dad-grid" class="dad-project-grid" hidden></section>
-    <p class="dad-counter" id="dad-counter"></p>
-    <section id="dad-info" class="dad-info" hidden></section>
+    <p class="project-counter" id="dad-counter"></p>
   </div>
 </main>
 
-<script src="assets/dads.js"></script>
-<script src="assets/site.js"></script>
+<div class="description-background" id="description-background" hidden></div>
+<section class="description-panel dad-info" id="description-panel" hidden>
+  <div id="dad-info"></div>
+</section>
+
+<script src="assets/dads.js?v=23"></script>
+<script src="assets/site.js?v=78"></script>
 </body>
 </html>

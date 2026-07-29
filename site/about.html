@@ -4,65 +4,95 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>dadda? — about</title>
-  <link rel="stylesheet" href="assets/site.css" />
+  <meta name="description" content="dadda? — An exhibition about single fatherhood." />
+  <meta name="theme-color" content="#ef426f" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="assets/site.css?v=122" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script>location.replace("index.html?v=33&about=");</script>
 </head>
 <body data-page="about">
 
-<a class="site-brand" href="index.html">dadda?</a>
+<header class="site-header aboutHeader">
+  <a class="site-brand" href="index.html"><img class="site-brand__logo protected-media" src="assets/dadda-logo.png" alt="dadda?" width="2170" height="725" decoding="async" draggable="false" /></a>
+  <nav class="site-nav" aria-label="Primary">
+    <a data-nav="about" href="about.html">About</a>
+    <a data-nav="submit" href="submit.html">Submit</a>
+  </nav>
+  <button type="button" class="aboutClose aboutHeader__close" id="about-close" aria-label="Close about">X</button>
+</header>
 
-<nav class="site-nav" aria-label="Primary">
-  <a data-nav="about" href="about.html">about</a>
-  <a data-nav="contact" href="contact.html">contact</a>
-  <a data-nav="shop" href="shop.html">shop</a>
-  <a data-nav="submit" href="submit.html">submit</a>
-</nav>
+<div class="aboutOverlay aboutOverlay--page" id="about-overlay" aria-hidden="false">
+  <div class="aboutOverlay__backdrop" aria-hidden="true"></div>
+  <button type="button" class="aboutOverlay__close aboutClose" aria-label="Close about">X</button>
+  <div class="aboutOverlay__panel">
+    <div class="overlay-grid prose">
+      <section>
+        <h2 class="section-label">About</h2>
+        <p>
+          <em class="dadda">dadda?</em> is a multimedia exhibition by
+          <a href="https://www.instagram.com/masonrosephoto" target="_blank" rel="noopener">Mason Rose</a>
+          examining the emotional and social realities
+          of single fatherhood through photography, film, installation, and personal testimony.
+        </p>
+        <p>
+          Developed through portraits and conversations with single fathers, the project considers
+          experiences that are often overlooked, simplified, or kept private. Rather than attempting
+          to define what makes a good father, <em class="dadda">dadda?</em> creates space for the contradictions within
+          single fatherhood. For presence and absence. Confidence and doubt. Love and failure.
+        </p>
+        <p>
+          This website accompanies the exhibition and offers another way to encounter the project beyond
+          the physical gallery. It also provides a space for the project to continue receiving stories
+          from single fathers.
+        </p>
+        <p>
+          Digital submissions are currently open to single fathers who would like to share photographs,
+          written reflections, letters, voice recordings, or other personal materials. Selected
+          submissions may be included in the online presentation of <em class="dadda">dadda?</em>
+        </p>
+      </section>
 
-<main class="overlay-page">
-  <header class="overlay-header">
-    <span>dadda?</span>
-    <a href="index.html">close</a>
-  </header>
+      <section>
+        <hr class="section-rule" />
+        <h2 class="section-label">Exhibition</h2>
+        <p>
+          Presented at the Arsenio L. Canlas Gallery at
+          <a href="https://www.instagram.com/thefindlab" target="_blank" rel="noopener">The Find Lab</a>,
+          <em class="dadda">dadda?</em> brings together
+          photography, film, sound, and installation in a physical environment created for viewers to move through
+          and encounter firsthand.
+        </p>
+        <p>
+          <span class="aboutOverlay__label">Opening Reception</span><br />
+          August 7, 2026 · 6pm-9pm<br />
+          Arsenio L. Canlas Gallery,
+          <a href="https://www.instagram.com/thefindlab" target="_blank" rel="noopener">The Find Lab</a><br />
+          <a href="https://maps.app.goo.gl/bQEkH2ZjsvNPTAkK9" target="_blank" rel="noopener">
+            187 W Center Street, Provo, Utah
+          </a>
+        </p>
+        <p>On view through September 12, 2026.</p>
+        <p>
+          RSVP to the opening reception
+          <a href="https://www.facebook.com/events/1394601002531174/" target="_blank" rel="noopener">here</a>.
+        </p>
+      </section>
 
-  <div class="overlay-grid prose">
-    <section>
-      <h2 class="section-label">Biography</h2>
-      <p>
-        dadda? is a photo exhibition that centers how single fatherhood is carried,
-        remembered, defended, softened, and misunderstood.
-      </p>
-      <p>
-        The work photographs fathers alone in spaces built for children. No children
-        are photographed. The absence is the subject.
-      </p>
-      <p>
-        Opening August 7th · The Find Lab · Provo, Utah
-      </p>
-    </section>
-
-    <section>
-      <h2 class="section-label">Exhibition</h2>
-      <p>
-        Each dad on the home grid opens into a full project — slides, grid, and story
-        folded together.
-      </p>
-      <p>
-        Remote interviews and anonymous submissions are accepted through the submit page.
-      </p>
-    </section>
-
-    <section>
-      <h2 class="section-label">Contact</h2>
-      <p><a href="contact.html">Studio &amp; press contacts</a></p>
-      <p><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a></p>
-    </section>
-
-    <section>
-      <h2 class="section-label">Press</h2>
-      <p>Selected press and talks forthcoming.</p>
-    </section>
+      <section>
+        <hr class="section-rule" />
+        <h2 class="section-label">Connect</h2>
+        <ul class="contact-list">
+          <li><span>General</span><a href="mailto:hello@daddaexhibition.com">hello@daddaexhibition.com</a></li>
+          <li><span>Press</span><a href="mailto:press@daddaexhibition.com">press@daddaexhibition.com</a></li>
+          <li><span>Instagram</span><a href="https://www.instagram.com/daddaexhibition" target="_blank" rel="noopener">@daddaexhibition</a></li>
+          <li><span>Facebook</span><a href="https://www.facebook.com/profile.php?id=61592524225948" target="_blank" rel="noopener">@daddaexhibition</a></li>
+        </ul>
+      </section>
+    </div>
   </div>
-</main>
+</div>
 
-<script src="assets/site.js"></script>
+<script src="assets/site.js?v=33"></script>
 </body>
 </html>

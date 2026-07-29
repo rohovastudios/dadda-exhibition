@@ -4,21 +4,25 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>dadda? — shop</title>
-  <link rel="stylesheet" href="assets/site.css" />
+  <meta name="description" content="dadda? — An exhibition about single fatherhood." />
+  <meta name="theme-color" content="#ef426f" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="assets/site.css?v=89" />
+  <script>document.documentElement.classList.add("js");</script>
 </head>
 <body data-page="shop">
 
-<a class="site-brand" href="index.html">dadda?</a>
+<header class="site-header">
+  <a class="site-brand" href="index.html"><img class="site-brand__logo protected-media" src="assets/dadda-logo.png" alt="dadda?" width="2170" height="725" decoding="async" draggable="false" /></a>
+  <nav class="site-nav" aria-label="Primary">
+    <a data-nav="about" href="about.html">About</a>
+    <a data-nav="submit" href="submit.html">Submit</a>
+  </nav>
+  <a class="site-header__close" href="index.html" aria-label="Close">X</a>
+</header>
 
-<nav class="site-nav" aria-label="Primary">
-  <a data-nav="about" href="about.html">about</a>
-  <a data-nav="contact" href="contact.html">contact</a>
-  <a data-nav="shop" href="shop.html">shop</a>
-  <a data-nav="submit" href="submit.html">submit</a>
-</nav>
-
-<main class="page page-wide prose">
-  <h1>Shop</h1>
+<main class="page-shell page-shell--wide prose">
+  <h1 class="page-title">Shop</h1>
   <p>Exhibition prints, book, and editioned objects. Checkout powered by Stripe.</p>
 
   <div class="shop-grid">
@@ -26,12 +30,11 @@
       <h2>Exhibition Print</h2>
       <p>Archival inkjet · signed · edition of 25</p>
       <p class="price">$120</p>
-      <!-- Replace href with your Stripe Payment Link -->
       <a class="button button--disabled" href="#" aria-disabled="true">Checkout — add Stripe link</a>
     </article>
 
     <article class="shop-card">
-      <h2>dadda? Book</h2>
+      <h2><em class="dadda">dadda?</em> Book</h2>
       <p>Publication accompanying the exhibition.</p>
       <p class="price">$45</p>
       <a class="button button--disabled" href="#" aria-disabled="true">Checkout — add Stripe link</a>
@@ -50,10 +53,9 @@
     Create products in the
     <a href="https://dashboard.stripe.com/payment-links" target="_blank" rel="noopener">Stripe Dashboard → Payment Links</a>,
     paste each link into the buttons above, and remove the <code>button--disabled</code> class.
-    For carts or multiple items later, we can move to Stripe Checkout Sessions or Shopify.
   </div>
 </main>
 
-<script src="assets/site.js"></script>
+<script src="assets/site.js?v=33"></script>
 </body>
 </html>
