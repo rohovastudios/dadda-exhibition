@@ -3099,14 +3099,35 @@
   function initSubmitHeaderScroll() {
     if (document.body.dataset.page !== "submit") return;
 
-    const threshold = 20;
+    const header = document.querySelector(".site-header");
+    if (!header) return;
+
+    function elementOverlapsHeader(el) {
+      if (!el || el.hidden) return false;
+      const headerRect = header.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
+      if (rect.height <= 0 || rect.width <= 0) return false;
+      return rect.top < headerRect.bottom && rect.bottom > headerRect.top;
+    }
+
+    function getOverlapTargets() {
+      return [
+        document.getElementById("submit-intro"),
+        ...document.querySelectorAll(
+          ".submit-step:not([hidden]), .submit-step--success:not([hidden])"
+        ),
+      ].filter(Boolean);
+    }
 
     function update() {
-      document.body.classList.toggle("is-scrolled", window.scrollY > threshold);
+      const hasOverlap =
+        window.scrollY > 0 && getOverlapTargets().some(elementOverlapsHeader);
+      document.body.classList.toggle("is-scrolled", hasOverlap);
     }
 
     update();
     window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
   }
 
   function initSubmitReleaseLinks() {
