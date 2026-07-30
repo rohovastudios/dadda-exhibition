@@ -4,16 +4,56 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>dadda? — submit</title>
-  <meta name="description" content="dadda? — Share your story about single fatherhood." />
+  <meta name="description" content="Share your story about single fatherhood with dadda?, a multimedia exhibition and online archive. Written responses and photographs welcome. Submissions may be anonymous." />
   <meta name="theme-color" content="#ef426f" />
+  <link rel="canonical" href="https://www.daddaexhibition.com/submit.html" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:site_name" content="dadda?" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.daddaexhibition.com/submit.html" />
+  <meta property="og:title" content="dadda? — Submit your story" />
+  <meta property="og:description" content="Share words, photographs, or memories related to single fatherhood with the dadda? exhibition and online archive." />
+  <meta property="og:image" content="https://www.daddaexhibition.com/og-image.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@daddaexhibition" />
+  <meta name="twitter:title" content="dadda? — Submit your story" />
+  <meta name="twitter:description" content="Share words, photographs, or memories related to single fatherhood with the dadda? exhibition and online archive." />
+  <meta name="twitter:image" content="https://www.daddaexhibition.com/og-image.png" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
   <link rel="icon" href="assets/favicon.png" type="image/png" />
-  <link rel="stylesheet" href="assets/site.css?v=178" />
+  <link rel="stylesheet" href="assets/site.css?v=222" />
+  <link rel="stylesheet" href="assets/prelaunch-landing.css?v=4" />
   <script>document.documentElement.classList.add("js");</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Submit your story — dadda?",
+    "url": "https://www.daddaexhibition.com/submit.html",
+    "description": "Share words, photographs, or memories related to single fatherhood with the dadda? exhibition and online archive.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "dadda?",
+      "url": "https://www.daddaexhibition.com/"
+    },
+    "about": {
+      "@type": "ExhibitionEvent",
+      "name": "dadda?",
+      "url": "https://www.daddaexhibition.com/"
+    },
+    "inLanguage": "en-US"
+  }
+  </script>
 </head>
 <body data-page="submit">
 
+<div class="landing__frame">
+
 <header class="site-header">
-  <a class="site-brand" href="index.html"><img class="site-brand__logo protected-media" src="assets/dadda-logo-landing.png" alt="dadda?" width="518" height="96" decoding="async" draggable="false" /></a>
+  <a class="site-brand" href="index.html"><img class="site-brand__logo protected-media" src="assets/dadda-logo.png" alt="dadda?" width="2170" height="725" decoding="async" draggable="false" /></a>
   <nav class="site-nav" aria-label="Primary">
     <a data-nav="about" href="about.html">About</a>
     <a data-nav="submit" href="submit.html">Submit</a>
@@ -26,7 +66,8 @@
     <h1 class="page-title">Submit your story</h1>
     <p>
       Share words, photographs, or memories related to single fatherhood. Submissions may be
-      anonymous. Selected work may be included in the exhibition archive.
+      anonymous. Selected submissions may be included in the exhibition, website, social media,
+      publications, films, press, archives, and future presentations of the project.
     </p>
   </div>
 
@@ -40,20 +81,32 @@
     novalidate
   >
     <div class="submit-wizard__progress" aria-live="polite">
-      <span class="submit-wizard__progress-label">Step <span id="submit-step-current">1</span> of <span id="submit-step-total">8</span></span>
-      <div class="submit-wizard__progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1">
+      <span class="submit-wizard__progress-label">Step <span id="submit-step-current">1</span> of <span id="submit-step-total">6</span></span>
+      <div class="submit-wizard__progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1">
         <span class="submit-wizard__progress-fill" id="submit-progress-fill"></span>
       </div>
     </div>
 
     <!-- Step 1: Contact Information -->
     <fieldset class="submit-step" data-step="1" data-required="true">
-      <legend class="submit-step__title">Contact Information <span class="submit-step__req" aria-hidden="true">*</span></legend>
+      <legend class="submit-step__legend">Contact Information</legend>
+      <div class="submit-step__header">
+        <p class="submit-step__title">Contact Information <span class="submit-step__req" aria-hidden="true">*</span></p>
+        <div class="submit-step__notice" role="note">
+          <p>
+            <em class="dadda">dadda?</em> is an artistic, documentary, and editorial project operated by ROH &amp; ROSE INC. dba ROHOVA STUDIOS. The information and materials you provide will be reviewed for possible inclusion in the project and may be stored and processed in the United States. Please review our <a href="privacy.html">Privacy Policy</a> to learn how your information is collected, used, stored, and shared.
+          </p>
+          <p>
+            <em class="dadda">dadda?</em> is not a mental health organization, counseling service, healthcare provider, crisis service, or emergency-response service. Submissions are not continuously monitored and should not be used to request urgent assistance.
+          </p>
+        </div>
+      </div>
 
+      <div class="submit-step__body">
       <div class="submit-field submit-field--full">
         <input type="text" id="full_legal_name" name="full_legal_name" autocomplete="name" required aria-describedby="label-full_legal_name" />
         <label class="submit-field__label" id="label-full_legal_name" for="full_legal_name">Full Legal Name</label>
-        <p class="submit-field__error" data-error-for="full_legal_name" hidden>Please enter your full legal name.</p>
+        <p class="submit-field__error" data-error-for="full_legal_name" hidden>Please enter your first and last legal name.</p>
       </div>
 
       <div class="submit-row">
@@ -111,6 +164,7 @@
           <label class="submit-field__label" id="label-remain_anonymous" for="remain_anonymous">I would like to remain anonymous</label>
         </div>
       </div>
+      </div>
     </fieldset>
 
     <!-- Step 2: Fatherhood relationship -->
@@ -157,6 +211,7 @@
       <legend class="submit-step__title">Your responses <span class="submit-step__req" aria-hidden="true">*</span></legend>
       <p class="submit-step__lead">
         Choose a writing prompt for each response. You may answer up to three prompts. At least one response is required.
+        Share only what you are comfortable allowing Rohova Studios and its authorized project collaborators to review and potentially publish.
       </p>
 
       <div class="submit-responses">
@@ -237,10 +292,15 @@
       <legend class="submit-step__title">Supporting Materials <span class="submit-step__optional">(Optional)</span></legend>
 
       <p class="submit-step__lead">
-        To protect privacy, children and anyone other than you who appears in an uploaded image will not
-        be shown publicly in a clear or identifiable way. Before any public use, they may be cropped out,
-        blurred, covered, silhouetted, or otherwise obscured. If you submit images that include children,
-        curators will manually blur each child's face before anything is published.
+        Upload only photographs and materials that you created, own, or have permission to submit.
+      </p>
+      <p class="submit-step__lead">
+        To protect privacy, Rohova Studios will not intentionally publicly display the unobscured face or
+        clearly identifying features of a child included in submitted materials unless any additional
+        authorization Rohova Studios determines is necessary has first been obtained. Children and other
+        individuals may be cropped, blurred, silhouetted, redacted, or otherwise obscured before public use.
+        These measures reduce the risk of identification but cannot guarantee that someone will be impossible
+        to identify from the surrounding image or context.
       </p>
 
       <div class="submit-field submit-field--full submit-field--file">
@@ -260,55 +320,27 @@
       </div>
     </fieldset>
 
+    <!-- Step 5: Follow-up interview -->
+    <fieldset class="submit-step" data-step="5" hidden>
+      <legend class="submit-step__title">Follow-up interview <span class="submit-step__optional">(Optional)</span></legend>
+      <p class="submit-step__lead">Are you open to being contacted for a possible follow-up interview?</p>
+
+      <div class="submit-checklist" role="group" aria-label="Follow-up interview preferences">
+        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="yes_in_person_or_video" /> Yes — I am open to an in-person or video interview</label>
+        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="yes_phone" /> Yes — I am open to a phone interview</label>
+        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="yes_email_only" /> Yes — contact me by email first to discuss</label>
+        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="no" /> No — I am not open to a follow-up interview at this time</label>
+      </div>
+    </fieldset>
+
     <!-- Step 6: Before you submit -->
     <fieldset class="submit-step" data-step="6" data-required="true" hidden>
       <legend class="submit-step__title">Before you submit <span class="submit-step__req" aria-hidden="true">*</span></legend>
 
-      <div class="submit-consent-list" role="group" aria-label="Required acknowledgements">
-        <label class="submit-check submit-check--required">
-          <input type="checkbox" name="consent_18" value="yes" required data-consent />
-          I am 18 years old or older
-        </label>
-        <label class="submit-check submit-check--required">
-          <input type="checkbox" name="consent_name_options" value="yes" required data-consent />
-          I understand that I can use my full name, first name only, an alias, or remain anonymous.
-        </label>
-        <label class="submit-check submit-check--required">
-          <input type="checkbox" name="consent_privacy_edits" value="yes" required data-consent />
-          I understand that names and identifying details may be changed or removed to protect privacy.
-        </label>
-        <label class="submit-check submit-check--required">
-          <input type="checkbox" name="consent_children_not_shown" value="yes" required data-consent />
-          I understand that children will not be publicly shown in a clear or identifiable way.
-        </label>
-        <label class="submit-check submit-check--required">
-          <input type="checkbox" name="consent_child_photos_obscured" value="yes" required data-consent />
-          I understand that if I upload a photo with a child or children, the child will be silhouetted, or otherwise obscured.
-        </label>
-        <label class="submit-check submit-check--required">
-          <input type="checkbox" name="consent_rights" value="yes" required data-consent />
-          I confirm that I have the right to submit the words, photos, and materials I provide.
-        </label>
-        <label class="submit-check submit-check--required">
-          <input type="checkbox" name="consent_usage" value="yes" required data-consent />
-          I understand that my submission may be used in the exhibition, website, social media, printed materials, press, books, documentaries, archives, and future versions of the project.
-        </label>
-        <label class="submit-check submit-check--required">
-          <input type="checkbox" name="consent_voluntary" value="yes" required data-consent />
-          I understand that I am contributing voluntarily and will not receive payment or royalties for this submission or future project uses.
-        </label>
-      </div>
-      <p class="submit-field__error" data-error-for="consent" hidden>Please confirm all items before continuing.</p>
-    </fieldset>
-
-    <!-- Step 7: Legal Release Signature -->
-    <fieldset class="submit-step" data-step="7" data-required="true" hidden>
-      <legend class="submit-step__title">Legal Release Signature <span class="submit-step__req" aria-hidden="true">*</span></legend>
-
       <p class="submit-release__hint" id="submit-release-hint">Please scroll through the entire release before signing.</p>
 
       <div class="submit-release prose" id="submit-release" tabindex="0" role="region" aria-label="Legal release">
-        <h2>Story Submission + Release</h2>
+        <h2>Submission Agreement and Release</h2>
         <p>
           I hereby submit my written response, photographs, and any other materials (collectively,
           "Materials") to the <em class="dadda">dadda?</em> project and its organizers, curators, and collaborators
@@ -344,8 +376,67 @@
       <p class="submit-field__error" data-error-for="release_scroll" hidden>Please scroll to the bottom of the legal release before continuing.</p>
       <input type="hidden" name="legal_release_read" id="legal_release_read" value="" />
 
+      <div class="submit-consent-list" role="group" aria-label="Required acknowledgements">
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_age_18" value="yes" required data-consent />
+          <span class="submit-check__text">I confirm that I am at least 18 years old.</span>
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_rights_authority" value="yes" required data-consent />
+          <span class="submit-check__text">
+            I confirm that I created, own, or have the legal right and authority to submit the words, photographs,
+            recordings, and other materials I am providing. I have obtained any permissions legally required from
+            identifiable people appearing in or discussed in my submission.
+          </span>
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_submission_agreement" value="yes" required data-consent />
+          <span class="submit-check__text">
+            I have read and agree to the <em class="dadda">dadda?</em>
+            <a href="#submit-release">Submission Agreement and Release</a> above. I authorize
+            ROH &amp; ROSE INC. dba ROHOVA STUDIOS to use selected materials as described in that Agreement. I understand
+            that I am contributing voluntarily and will not receive payment or royalties unless separately agreed in writing.
+          </span>
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_privacy_policy" value="yes" required data-consent />
+          <span class="submit-check__text">
+            I acknowledge that I have been provided the <em class="dadda">dadda?</em>
+            <a href="privacy.html">Privacy Policy</a> and consent to Rohova Studios collecting, storing, and
+            processing my personal information and submitted materials for the purposes described in that policy.
+            I understand that my information may be stored and processed in the United States.
+          </span>
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_sensitive_review" value="yes" required data-consent />
+          <span class="submit-check__text">
+            I understand that my submission may contain sensitive personal information, including information relating
+            to physical or mental health, disability, race or ethnicity, religion, sexual orientation, gender identity,
+            trauma, or family relationships. I explicitly consent to Rohova Studios collecting and privately reviewing
+            any such information that I voluntarily provide.
+          </span>
+        </label>
+        <label class="submit-check submit-check--required">
+          <input type="checkbox" name="consent_sensitive_publish" value="yes" required data-consent />
+          <span class="submit-check__text">
+            I separately consent to Rohova Studios publishing and sharing sensitive personal information contained in
+            the portions of my submission selected for <em class="dadda">dadda?</em>, as described in the
+            <a href="privacy.html">Privacy Policy</a> and
+            <a href="#submit-release">Submission Agreement and Release</a> above. I understand that information made
+            public may be copied or redistributed by third parties outside Rohova Studios&rsquo; control.
+          </span>
+        </label>
+      </div>
+      <p class="submit-field__error" data-error-for="consent" hidden>Please confirm all items before continuing.</p>
+
       <div class="submit-signature submit-signature--locked" id="submit-signature">
         <p class="submit-signature__prompt">Choose one way to sign:</p>
+        <p class="submit-step__notice submit-signature__notice">
+          By typing my full legal name or drawing my signature and clicking Continue, I confirm that I have read
+          and voluntarily agree to the <em class="dadda">dadda?</em>
+          <a href="#submit-release">Submission Agreement and Release</a> above and intend my electronic signature to
+          have the same legal effect as my handwritten signature.
+        </p>
         <div class="submit-signature__tabs" role="tablist" aria-label="Signature method">
           <button type="button" class="submit-signature__tab active" role="tab" aria-selected="true" data-signature-mode="typed">Type your name</button>
           <button type="button" class="submit-signature__tab" role="tab" aria-selected="false" data-signature-mode="draw">Draw signature</button>
@@ -367,19 +458,6 @@
 
         <input type="hidden" name="signature_type" id="signature_type" value="typed" />
         <p class="submit-field__error" data-error-for="signature" hidden>Please provide your signature before continuing.</p>
-      </div>
-    </fieldset>
-
-    <!-- Step 8: Follow-up interview -->
-    <fieldset class="submit-step" data-step="8" hidden>
-      <legend class="submit-step__title">Follow-up interview <span class="submit-step__optional">(Optional)</span></legend>
-      <p class="submit-step__lead">Are you open to being contacted for a possible follow-up interview?</p>
-
-      <div class="submit-checklist" role="group" aria-label="Follow-up interview preferences">
-        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="yes_in_person_or_video" /> Yes — I am open to an in-person or video interview</label>
-        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="yes_phone" /> Yes — I am open to a phone interview</label>
-        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="yes_email_only" /> Yes — contact me by email first to discuss</label>
-        <label class="submit-check"><input type="checkbox" name="follow_up_interview[]" value="no" /> No — I am not open to a follow-up interview at this time</label>
       </div>
     </fieldset>
 
@@ -440,7 +518,33 @@
   </div>
 </div>
 
+<div class="submitConfirm" id="submit-confirm" hidden aria-hidden="true">
+  <div class="submitConfirm__backdrop" id="submit-confirm-backdrop" aria-hidden="true"></div>
+  <div class="submitConfirm__panel" role="dialog" aria-modal="true" aria-labelledby="submit-confirm-title">
+    <button type="button" class="submitConfirm__close" id="submit-confirm-close" aria-label="Close">X</button>
+    <h2 class="submitConfirm__title" id="submit-confirm-title">Are you sure?</h2>
+    <p class="submitConfirm__body">
+      Submitting does not guarantee selection or publication. Submissions are final. Rohova Studios is not
+      obligated to return, remove, withdraw, or discontinue use of submitted materials except where required by
+      applicable law. Privacy or legal rights requests may be sent to
+      <a href="mailto:legal@daddaexhibition.com">legal@daddaexhibition.com</a>.
+    </p>
+    <div class="submitConfirm__actions">
+      <button type="button" class="submitConfirm__btn submitConfirm__btn--cancel" id="submit-confirm-cancel">Cancel</button>
+      <button type="button" class="submitConfirm__btn submitConfirm__btn--proceed" id="submit-confirm-proceed">Proceed and submit</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-legal-footer" aria-label="Legal">
+  <nav class="site-legal-footer__nav" aria-label="Legal information">
+    <a href="privacy.html">Privacy Policy</a><span class="site-legal-footer__sep" aria-hidden="true">·</span><a href="submission-terms.html">Submission Terms</a><span class="site-legal-footer__sep" aria-hidden="true">·</span><a href="cookies.html">Cookie Settings</a>
+  </nav>
+</footer>
+
+</div>
+
 <script src="assets/submit-countries.js"></script>
-<script src="assets/site.js?v=123"></script>
+<script src="assets/site.js?v=136"></script>
 </body>
 </html>

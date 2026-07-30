@@ -2,6 +2,8 @@
   const DENSITY_STORAGE_KEY = "dadda-density-mode";
   const LEGACY_DENSITY_KEY = "dadda-grid-density";
   const NAV_KEY = "dadda-nav-intent";
+  const SUBMIT_DRAFT_KEY = "dadda-submit-draft";
+  const SUBMIT_NAV_KEY = "dadda-submit-nav";
   const SITE_HTML_VERSION = "65";
   const PAGE_FADE_MS = 1000;
   const OVERLAY_FADE_MS = 1000;
@@ -183,6 +185,95 @@
     document.querySelectorAll("[data-nav]").forEach((link) => {
       link.classList.toggle("active", link.dataset.nav === page);
     });
+  }
+
+  function getNavigationType() {
+    const entry = performance.getEntriesByType("navigation")[0];
+    return entry?.type || "navigate";
+  }
+
+  function clearSubmitDraftStorage() {
+    try {
+      localStorage.removeItem(SUBMIT_DRAFT_KEY);
+      sessionStorage.removeItem(SUBMIT_DRAFT_KEY);
+    } catch (_err) {
+      // ignore
+    }
+  }
+
+  function abandonSubmitDraft() {
+    clearSubmitDraftStorage();
+    try {
+      sessionStorage.removeItem(SUBMIT_NAV_KEY);
+    } catch (_err) {
+      // ignore
+    }
+  }
+
+  function markSubmitPageActive() {
+    try {
+      sessionStorage.setItem(SUBMIT_NAV_KEY, "on-page");
+    } catch (_err) {
+      // ignore
+    }
+  }
+
+  function markSubmitPageLeft() {
+    try {
+      const state = sessionStorage.getItem(SUBMIT_NAV_KEY);
+      if (state === "on-page") {
+        sessionStorage.setItem(SUBMIT_NAV_KEY, "left-once");
+      }
+    } catch (_err) {
+      // ignore
+    }
+  }
+
+  function shouldRestoreSubmitDraft() {
+    const raw =
+      localStorage.getItem(SUBMIT_DRAFT_KEY) ||
+      sessionStorage.getItem(SUBMIT_DRAFT_KEY);
+    if (!raw) return false;
+
+    const navType = getNavigationType();
+    if (navType === "reload" || navType === "back_forward") {
+      return true;
+    }
+
+    if (navType === "navigate") {
+      try {
+        const navState = sessionStorage.getItem(SUBMIT_NAV_KEY);
+        if (navState === "on-page") {
+          return true;
+        }
+      } catch (_err) {
+        // ignore
+      }
+      clearSubmitDraftStorage();
+    }
+
+    return false;
+  }
+
+  function initSubmitDraftAbandon() {
+    if (document.body.dataset.page === "submit") return;
+
+    let navState;
+    try {
+      navState = sessionStorage.getItem(SUBMIT_NAV_KEY);
+    } catch (_err) {
+      return;
+    }
+    if (navState !== "left-once") return;
+
+    document.addEventListener(
+      "click",
+      (event) => {
+        if (!event.target.closest("a[href]")) return;
+        abandonSubmitDraft();
+      },
+      true
+    );
   }
 
   function navigateWithFade(url, intent) {
@@ -1176,7 +1267,7 @@
     const form = document.getElementById("submit-form");
     if (!form || document.body.dataset.page !== "submit") return;
 
-    const TOTAL_STEPS = 8;
+    const TOTAL_STEPS = 6;
     const steps = [...form.querySelectorAll(".submit-step[data-step]")].filter(
       (el) => el.dataset.step !== "success"
     );
@@ -1190,7 +1281,6 @@
     const progressFill = document.getElementById("submit-progress-fill");
     const progressBar = form.querySelector(".submit-wizard__progress-bar");
 
-    const SUBMIT_DRAFT_KEY = "dadda-submit-draft";
     const SAVE_DRAFT_MS = 400;
 
     let currentStep = 1;
@@ -1231,6 +1321,11 @@
     const fileInput = document.getElementById("supporting_images");
     const filePreviewList = document.getElementById("supporting-images-previews");
     const submitIntro = document.getElementById("submit-intro");
+    const submitConfirm = document.getElementById("submit-confirm");
+    const submitConfirmBackdrop = document.getElementById("submit-confirm-backdrop");
+    const submitConfirmClose = document.getElementById("submit-confirm-close");
+    const submitConfirmCancel = document.getElementById("submit-confirm-cancel");
+    const submitConfirmProceed = document.getElementById("submit-confirm-proceed");
 
     const progressWrap = form.querySelector(".submit-wizard__progress");
 
@@ -1347,6 +1442,11 @@
       });
     }
 
+    function isValidFullLegalName(value) {
+      const parts = value.trim().split(/\s+/).filter(Boolean);
+      return parts.length >= 2 && parts.every((part) => part.length > 0);
+    }
+
     function validateStep(step) {
       let valid = true;
 
@@ -1354,7 +1454,7 @@
         const name = form.querySelector("#full_legal_name");
         const email = form.querySelector("#email");
         const phone = form.querySelector("#phone");
-        const nameOk = Boolean(name?.value.trim());
+        const nameOk = isValidFullLegalName(name?.value || "");
         const emailOk = Boolean(email?.value.trim()) && email.validity.valid;
         const phoneValue = phone?.value.trim() || "";
         const phoneOk = isValidPhone(phoneValue);
@@ -1373,6 +1473,8 @@
       }
 
       if (step === 6) {
+        if (!validateReleaseScroll()) valid = false;
+
         const consents = form.querySelectorAll("[data-consent]");
         const allChecked = [...consents].every((cb) => cb.checked);
         consents.forEach((cb) => {
@@ -1380,10 +1482,6 @@
         });
         showError("consent", !allChecked);
         if (!allChecked) valid = false;
-      }
-
-      if (step === 7) {
-        if (!validateReleaseScroll()) valid = false;
 
         let sigOk = false;
         if (signatureMode === "typed") {
@@ -1466,12 +1564,7 @@
     }
 
     function clearDraft() {
-      try {
-        localStorage.removeItem(SUBMIT_DRAFT_KEY);
-        sessionStorage.removeItem(SUBMIT_DRAFT_KEY);
-      } catch (_err) {
-        // ignore
-      }
+      clearSubmitDraftStorage();
     }
 
     function restoreDraftFields(fields) {
@@ -1588,7 +1681,7 @@
       nav.hidden = true;
       nav.setAttribute("aria-hidden", "true");
       document.body.classList.add("is-submit-success");
-      clearDraft();
+      abandonSubmitDraft();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1610,7 +1703,7 @@
         nav.hidden = true;
       }
 
-      if (currentStep === 7) {
+      if (currentStep === 6) {
         updateReleaseScrollUI();
       }
     }
@@ -1720,7 +1813,7 @@
       scheduleSaveDraft();
     }, { passive: true });
     window.addEventListener("resize", () => {
-      if (currentStep === 7) updateReleaseScrollUI();
+      if (currentStep === 6) updateReleaseScrollUI();
     });
 
     const releaseEnd = document.getElementById("submit-release-end");
@@ -1760,7 +1853,18 @@
     form.addEventListener("input", scheduleSaveDraft);
     form.addEventListener("change", scheduleSaveDraft);
 
-    window.addEventListener("pagehide", flushSaveDraft);
+    window.addEventListener("pagehide", () => {
+      flushSaveDraft();
+      if (draftPersistenceEnabled) {
+        markSubmitPageLeft();
+      } else {
+        try {
+          sessionStorage.removeItem(SUBMIT_NAV_KEY);
+        } catch (_err) {
+          // ignore
+        }
+      }
+    });
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden") flushSaveDraft();
     });
@@ -2812,15 +2916,35 @@
           return;
         }
       }
-      if (!validateStep(7)) {
-        goToStep(7);
+      if (!validateStep(6)) {
+        goToStep(6);
         return;
       }
+
+      openSubmitConfirm();
+    });
+
+    function openSubmitConfirm() {
+      if (!submitConfirm) return;
+      submitConfirm.hidden = false;
+      submitConfirm.setAttribute("aria-hidden", "false");
+      submitConfirmProceed?.focus();
+    }
+
+    function closeSubmitConfirm() {
+      if (!submitConfirm) return;
+      submitConfirm.hidden = true;
+      submitConfirm.setAttribute("aria-hidden", "true");
+      submitBtn?.focus();
+    }
+
+    async function performSubmission() {
       if (signatureMode === "draw" && signatureCanvas && !isCanvasBlank(signatureCanvas)) {
         signatureImageField.value = signatureCanvas.toDataURL("image/png");
       }
 
       submitBtn.disabled = true;
+      if (submitConfirmProceed) submitConfirmProceed.disabled = true;
 
       try {
         const response = await fetch(form.action, {
@@ -2836,13 +2960,111 @@
         showSubmissionSuccess();
       } catch {
         submitBtn.disabled = false;
+        if (submitConfirmProceed) submitConfirmProceed.disabled = false;
         window.alert("Something went wrong sending your submission. Please try again.");
       }
+    }
+
+    submitConfirmProceed?.addEventListener("click", () => {
+      closeSubmitConfirm();
+      performSubmission();
     });
 
-    if (!restoreDraft()) {
+    submitConfirmCancel?.addEventListener("click", closeSubmitConfirm);
+    submitConfirmClose?.addEventListener("click", closeSubmitConfirm);
+    submitConfirmBackdrop?.addEventListener("click", closeSubmitConfirm);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || submitConfirm?.hidden !== false) return;
+      closeSubmitConfirm();
+    });
+
+    const shouldRestoreDraft = shouldRestoreSubmitDraft();
+    markSubmitPageActive();
+    if (shouldRestoreDraft && restoreDraft()) {
+      // Draft restored from storage.
+    } else {
       updateUI();
     }
+  }
+
+  let defaultHomeSeo = null;
+
+  function captureDefaultHomeSeo() {
+    if (defaultHomeSeo) return defaultHomeSeo;
+    defaultHomeSeo = {
+      title: document.title,
+      description: document.querySelector('meta[name="description"]')?.content || "",
+      canonical: document.querySelector('link[rel="canonical"]')?.href || "",
+      ogTitle: document.querySelector('meta[property="og:title"]')?.content || "",
+      ogDescription: document.querySelector('meta[property="og:description"]')?.content || "",
+      ogUrl: document.querySelector('meta[property="og:url"]')?.content || "",
+      twitterTitle: document.querySelector('meta[name="twitter:title"]')?.content || "",
+      twitterDescription: document.querySelector('meta[name="twitter:description"]')?.content || "",
+    };
+    return defaultHomeSeo;
+  }
+
+  function setMetaContent(selector, value) {
+    if (!value) return;
+    document.querySelectorAll(selector).forEach((el) => {
+      el.setAttribute("content", value);
+    });
+  }
+
+  function applySeo({ title, description, canonical, ogTitle, ogDescription, ogUrl, twitterTitle, twitterDescription }) {
+    if (title) document.title = title;
+    setMetaContent('meta[name="description"]', description);
+    setMetaContent('meta[property="og:title"]', ogTitle || title);
+    setMetaContent('meta[property="og:description"]', ogDescription || description);
+    setMetaContent('meta[property="og:url"]', ogUrl || canonical);
+    setMetaContent('meta[name="twitter:title"]', twitterTitle || ogTitle || title);
+    setMetaContent('meta[name="twitter:description"]', twitterDescription || ogDescription || description);
+
+    let canonicalEl = document.querySelector('link[rel="canonical"]');
+    if (!canonicalEl) {
+      canonicalEl = document.createElement("link");
+      canonicalEl.rel = "canonical";
+      document.head.appendChild(canonicalEl);
+    }
+    if (canonical || ogUrl) canonicalEl.href = ogUrl || canonical;
+  }
+
+  function initDynamicSeo() {
+    if (document.body.dataset.page !== "home") return;
+
+    const defaults = captureDefaultHomeSeo();
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("viewer") || window.history.state?.viewer;
+
+    if (!slug || typeof getDadBySlug !== "function") {
+      applySeo(defaults);
+      return;
+    }
+
+    const dad = getDadBySlug(slug);
+    if (!dad) {
+      applySeo(defaults);
+      return;
+    }
+
+    const imageIndex = Number(params.get("image") || window.history.state?.image || 0);
+    const title = `${dad.name} — dadda?`;
+    const description =
+      dad.excerpt ||
+      "A story from dadda?, a multimedia exhibition about single fatherhood.";
+    const url = buildProfileShareUrl(slug, imageIndex);
+
+    applySeo({
+      title,
+      description,
+      canonical: url,
+      ogTitle: title,
+      ogDescription: description,
+      ogUrl: url,
+      twitterTitle: title,
+      twitterDescription: description,
+    });
   }
 
   function initSubmitHeaderScroll() {
@@ -2858,15 +3080,36 @@
     window.addEventListener("scroll", update, { passive: true });
   }
 
+  function initSubmitReleaseLinks() {
+    if (document.body.dataset.page !== "submit") return;
+
+    const releaseEl = document.getElementById("submit-release");
+    const submitForm = document.getElementById("submit-form");
+    if (!submitForm) return;
+
+    submitForm.addEventListener("click", (event) => {
+      const releaseAnchor = event.target.closest('a[href="#submit-release"]');
+      if (!releaseAnchor) return;
+
+      event.preventDefault();
+      releaseEl?.scrollIntoView({ behavior: "smooth", block: "start" });
+      releaseEl?.focus();
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     initImageProtection();
     versionInternalLinks();
     markActiveNav();
     bindFadeNavigation();
     initPageEnter();
+    initDynamicSeo();
+    window.addEventListener("popstate", initDynamicSeo);
     initAboutOverlay();
+    initSubmitDraftAbandon();
     initSubmitForm();
     initSubmitHeaderScroll();
+    initSubmitReleaseLinks();
 
     const openViewer = initSlideViewer();
     if (document.body.dataset.page === "home" && !isDadsArchiveLive()) {
