@@ -567,9 +567,10 @@ body[data-page="home"].home-prelaunch .archiveGrid {
   font: inherit;
   font-weight: 400;
   font-synthesis: weight style small-caps;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.12em;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.06em;
+  text-decoration-skip-ink: none;
 }
 
 .homeLanding__cta a:hover,
@@ -577,6 +578,7 @@ body[data-page="home"].home-prelaunch .archiveGrid {
   color: var(--color-text);
   font-weight: 400;
   outline: 0;
+  border-bottom-color: currentColor;
 }
 
 @media (max-width: 768px) {

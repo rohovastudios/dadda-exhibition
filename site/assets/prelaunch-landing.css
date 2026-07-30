@@ -92,6 +92,10 @@ body[data-page="home"].home-prelaunch .landing__soon {
 }
 
 @media (max-width: 768px) {
+  body[data-page="submit"] .landing__frame {
+    background-attachment: scroll;
+  }
+
   body[data-page="home"].home-prelaunch .landing__footer {
     left: max(calc(27 / 1080 * 100%), env(safe-area-inset-left, 0px));
     right: max(calc(27 / 1080 * 100%), env(safe-area-inset-right, 0px));
