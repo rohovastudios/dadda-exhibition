@@ -2071,7 +2071,7 @@ body[data-page="submit"] .site-brand {
 
 body[data-page="submit"] .site-brand__logo {
   display: block;
-  height: clamp(2rem, 5vw, var(--logo-height));
+  height: clamp(1.85rem, 4vw, calc(var(--logo-height) * 0.72));
   width: auto;
   max-width: 100%;
   object-fit: contain;
@@ -2275,7 +2275,7 @@ body[data-page="submit"] .submit-wizard {
   }
 
   body[data-page="submit"] .site-brand__logo {
-    height: clamp(1.85rem, 7.5vw, calc(var(--logo-height) * 0.88));
+    height: clamp(1.65rem, 6vw, calc(var(--logo-height) * 0.72));
   }
 
   body[data-page="home"] .siteWordmark {
@@ -2773,7 +2773,9 @@ body[data-page="submit"] .submit-wizard {
 
 .submit-field select {
   cursor: pointer;
+  -webkit-appearance: none;
   appearance: none;
+  border-radius: 0;
   background-image: linear-gradient(45deg, transparent 50%, var(--color-text) 50%),
     linear-gradient(135deg, var(--color-text) 50%, transparent 50%);
   background-position: calc(100% - 14px) calc(50% + 2px), calc(100% - 9px) calc(50% + 2px);
