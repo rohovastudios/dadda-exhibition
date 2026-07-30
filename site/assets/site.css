@@ -511,8 +511,8 @@ body[data-page="home"].home-prelaunch .archiveGrid {
   color: #fff;
   font-family: var(--font-detail);
   font-size: min(
-    calc(14.5 / var(--landing-ref-h) * var(--landing-frame-h)),
-    calc(14.5 / var(--landing-hero-text-w) * 92vw)
+    calc(15.95 / var(--landing-ref-h) * var(--landing-frame-h)),
+    calc(15.95 / var(--landing-hero-text-w) * 92vw)
   );
   font-weight: 700;
   font-synthesis: none;
@@ -531,8 +531,8 @@ body[data-page="home"].home-prelaunch .archiveGrid {
   color: #fff;
   font-family: "Newsreader Text", Georgia, "Times New Roman", serif;
   font-size: min(
-    calc(12 / var(--landing-ref-h) * var(--landing-frame-h)),
-    calc(12 / 480 * 92vw)
+    calc(13.2 / var(--landing-ref-h) * var(--landing-frame-h)),
+    calc(13.2 / 480 * 92vw)
   );
   font-style: italic;
   font-weight: 400;
@@ -587,15 +587,15 @@ body[data-page="home"].home-prelaunch .archiveGrid {
   body[data-page="home"].home-prelaunch .homeLanding__hero {
     white-space: nowrap;
     font-size: min(
-      calc(14.5 / var(--landing-ref-h) * var(--landing-frame-h)),
-      calc(14.5 / var(--landing-hero-text-w) * 85vw)
+      calc(15.95 / var(--landing-ref-h) * var(--landing-frame-h)),
+      calc(15.95 / var(--landing-hero-text-w) * 85vw)
     );
   }
 
   body[data-page="home"].home-prelaunch .homeLanding__heroSoon {
     font-size: min(
-      calc(12 / var(--landing-ref-h) * var(--landing-frame-h)),
-      calc(12 / 520 * 85vw)
+      calc(13.2 / var(--landing-ref-h) * var(--landing-frame-h)),
+      calc(13.2 / 520 * 85vw)
     );
     letter-spacing: 0.03em;
   }
