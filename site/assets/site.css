@@ -2044,6 +2044,11 @@ body[data-page="submit"] .site-nav {
 }
 
 body[data-page="submit"] .site-header {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid transparent;
+  pointer-events: none;
   transition:
     background 0.35s ease,
     backdrop-filter 0.35s ease,
@@ -2052,7 +2057,7 @@ body[data-page="submit"] .site-header {
 }
 
 body[data-page="submit"].is-scrolled .site-header {
-  background: var(--overlay-chrome-bg);
+  background: rgba(255, 255, 255, 0.35);
   backdrop-filter: var(--overlay-chrome-blur);
   -webkit-backdrop-filter: var(--overlay-chrome-blur);
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);

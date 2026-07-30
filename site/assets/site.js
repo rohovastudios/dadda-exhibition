@@ -3,6 +3,7 @@
   const LEGACY_DENSITY_KEY = "dadda-grid-density";
   const NAV_KEY = "dadda-nav-intent";
   const SUBMIT_DRAFT_KEY = "dadda-submit-draft";
+  const SUBMIT_DRAFT_VERSION = 2;
   const SUBMIT_NAV_KEY = "dadda-submit-nav";
   const SITE_HTML_VERSION = "65";
   const PAGE_FADE_MS = 1000;
@@ -1267,7 +1268,7 @@
     const form = document.getElementById("submit-form");
     if (!form || document.body.dataset.page !== "submit") return;
 
-    const TOTAL_STEPS = 6;
+    const TOTAL_STEPS = 7;
     const steps = [...form.querySelectorAll(".submit-step[data-step]")].filter(
       (el) => el.dataset.step !== "success"
     );
@@ -1472,7 +1473,7 @@
         if (!firstOk || !secondOk || !thirdOk) valid = false;
       }
 
-      if (step === 6) {
+      if (step === 7) {
         if (!validateReleaseScroll()) valid = false;
 
         const consents = form.querySelectorAll("[data-consent]");
@@ -1534,6 +1535,7 @@
       if (!draftPersistenceEnabled) return;
       try {
         const payload = {
+          version: SUBMIT_DRAFT_VERSION,
           step: currentStep,
           signatureMode,
           releaseScrolled,
@@ -1615,6 +1617,14 @@
       }
     }
 
+    function mapLegacyDraftStep(step) {
+      // Old 8-step flow: 1–5 unchanged; 6–7 consent/signature → 7; 8 interview → 6.
+      if (step <= 5) return step;
+      if (step === 8) return 6;
+      if (step === 6 || step === 7) return 7;
+      return 1;
+    }
+
     function restoreDraft() {
       const raw = readDraftStorage();
       if (!raw) return false;
@@ -1627,9 +1637,28 @@
         return false;
       }
 
-      const step = Math.min(Number(draft.step), TOTAL_STEPS);
+      let step = Number(draft.step);
+      const draftVersion = draft.version;
+
+      if (draftVersion === SUBMIT_DRAFT_VERSION) {
+        step = Math.min(step, TOTAL_STEPS);
+      } else if (draftVersion == null || draftVersion === 1) {
+        step = mapLegacyDraftStep(step);
+      } else {
+        clearDraft();
+        return false;
+      }
+
       if (!Number.isInteger(step) || step < 1) {
         clearDraft();
+        return false;
+      }
+
+      const stepEl = steps.find((el) => Number(el.dataset.step) === step);
+      if (!stepEl) {
+        clearDraft();
+        currentStep = 1;
+        updateUI();
         return false;
       }
 
@@ -1703,7 +1732,7 @@
         nav.hidden = true;
       }
 
-      if (currentStep === 6) {
+      if (currentStep === 7) {
         updateReleaseScrollUI();
       }
     }
@@ -1813,7 +1842,7 @@
       scheduleSaveDraft();
     }, { passive: true });
     window.addEventListener("resize", () => {
-      if (currentStep === 6) updateReleaseScrollUI();
+      if (currentStep === 7) updateReleaseScrollUI();
     });
 
     const releaseEnd = document.getElementById("submit-release-end");
@@ -2916,8 +2945,8 @@
           return;
         }
       }
-      if (!validateStep(6)) {
-        goToStep(6);
+      if (!validateStep(7)) {
+        goToStep(7);
         return;
       }
 
