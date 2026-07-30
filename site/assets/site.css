@@ -2071,7 +2071,7 @@ body[data-page="submit"] .site-brand {
 
 body[data-page="submit"] .site-brand__logo {
   display: block;
-  height: clamp(1.85rem, 4vw, calc(var(--logo-height) * 0.72));
+  height: clamp(1.65rem, 3.5vw, 1.85rem);
   width: auto;
   max-width: 100%;
   object-fit: contain;
@@ -2275,7 +2275,7 @@ body[data-page="submit"] .submit-wizard {
   }
 
   body[data-page="submit"] .site-brand__logo {
-    height: clamp(1.65rem, 6vw, calc(var(--logo-height) * 0.72));
+    height: clamp(1.5rem, 5vw, 1.85rem);
   }
 
   body[data-page="home"] .siteWordmark {
@@ -4014,9 +4014,10 @@ body[data-page="submit"] .submit-wizard__nav {
 
 .site-legal-footer a {
   color: inherit;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.12em;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.06em;
+  text-decoration-skip-ink: none;
   opacity: 0.85;
   cursor: pointer;
 }
@@ -4026,9 +4027,7 @@ body[data-page="submit"] .submit-wizard__nav {
   color: var(--color-text);
   opacity: 1;
   outline: 0;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.15em;
+  border-bottom-color: currentColor;
 }
 
 .site-legal-footer__sep {
