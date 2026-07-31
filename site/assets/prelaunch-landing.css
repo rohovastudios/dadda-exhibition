@@ -3,8 +3,8 @@
 body[data-page="home"].home-prelaunch {
   --ref-w: 1920;
   --ref-h: 1200;
-  --frame-h: max(100dvh, calc(100vw * var(--ref-h) / var(--ref-w)));
-  --frame-w: max(100vw, calc(100dvh * var(--ref-w) / var(--ref-h)));
+  --frame-h: 100dvh;
+  --frame-w: 100vw;
   --font-newsreader-text: "Newsreader Text", Georgia, "Times New Roman", serif;
   font-synthesis: weight style small-caps;
   -webkit-font-smoothing: antialiased;
@@ -22,9 +22,10 @@ body[data-page="submit"] .landing__frame {
 
 body[data-page="home"].home-prelaunch .landing__frame {
   position: relative;
-  width: var(--frame-w);
-  height: var(--frame-h);
+  width: 100%;
+  height: 100%;
   max-width: 100vw;
+  max-height: 100dvh;
 }
 
 body[data-page="submit"] .landing__frame {
@@ -45,7 +46,10 @@ body[data-page="submit"] {
 body[data-page="home"].home-prelaunch .landing__footer {
   position: absolute;
   left: calc(47 / var(--ref-w) * 100%);
-  bottom: max(calc(50 / var(--ref-h) * 100%), env(safe-area-inset-bottom, 0px));
+  bottom: calc(
+    max(calc(50 / var(--ref-h) * 100%), env(safe-area-inset-bottom, 0px)) +
+      var(--home-legal-chrome, 2.35rem)
+  );
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -99,7 +103,10 @@ body[data-page="home"].home-prelaunch .landing__soon {
   body[data-page="home"].home-prelaunch .landing__footer {
     left: max(calc(27 / 1080 * 100%), env(safe-area-inset-left, 0px));
     right: max(calc(27 / 1080 * 100%), env(safe-area-inset-right, 0px));
-    bottom: max(calc(29 / 675 * 100%), env(safe-area-inset-bottom, 0px));
+    bottom: calc(
+      max(calc(29 / 675 * 100%), env(safe-area-inset-bottom, 0px)) +
+        var(--home-legal-chrome, 2.35rem)
+    );
     max-width: none;
     width: calc(100% - max(calc(54 / 1080 * 100%), env(safe-area-inset-left, 0px)) - max(calc(54 / 1080 * 100%), env(safe-area-inset-right, 0px)));
   }
