@@ -456,7 +456,6 @@ body[data-page="home"].home-prelaunch {
   --landing-ref-h: 1200;
   --landing-frame-h: 100dvh;
   --landing-frame-w: 100vw;
-  --home-legal-chrome: calc(2.35rem + max(0.65rem, env(safe-area-inset-bottom, 0px)));
   --landing-hero-text-w: 480;
   overflow: hidden;
 }

@@ -46,10 +46,7 @@ body[data-page="submit"] {
 body[data-page="home"].home-prelaunch .landing__footer {
   position: absolute;
   left: calc(47 / var(--ref-w) * 100%);
-  bottom: calc(
-    max(calc(50 / var(--ref-h) * 100%), env(safe-area-inset-bottom, 0px)) +
-      var(--home-legal-chrome, 2.35rem)
-  );
+  bottom: max(calc(50 / var(--ref-h) * 100%), env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -103,10 +100,7 @@ body[data-page="home"].home-prelaunch .landing__soon {
   body[data-page="home"].home-prelaunch .landing__footer {
     left: max(calc(27 / 1080 * 100%), env(safe-area-inset-left, 0px));
     right: max(calc(27 / 1080 * 100%), env(safe-area-inset-right, 0px));
-    bottom: calc(
-      max(calc(29 / 675 * 100%), env(safe-area-inset-bottom, 0px)) +
-        var(--home-legal-chrome, 2.35rem)
-    );
+    bottom: max(calc(29 / 675 * 100%), env(safe-area-inset-bottom, 0px));
     max-width: none;
     width: calc(100% - max(calc(54 / 1080 * 100%), env(safe-area-inset-left, 0px)) - max(calc(54 / 1080 * 100%), env(safe-area-inset-right, 0px)));
   }

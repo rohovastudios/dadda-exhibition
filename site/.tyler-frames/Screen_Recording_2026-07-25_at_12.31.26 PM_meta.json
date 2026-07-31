@@ -1,0 +1,132 @@
+{
+  "file": "/Users/b/Desktop/Screen Recording 2026-07-25 at 12.31.26\u202fPM.mov",
+  "fps": 35.09664292980671,
+  "frames": 2300,
+  "duration": 65.53333333333333,
+  "samples": [
+    {
+      "t_sec": 0,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t00000ms.jpg"
+    },
+    {
+      "t_sec": 0.25,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t00250ms.jpg"
+    },
+    {
+      "t_sec": 0.5,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t00500ms.jpg"
+    },
+    {
+      "t_sec": 0.75,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t00750ms.jpg"
+    },
+    {
+      "t_sec": 1.0,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t01000ms.jpg"
+    },
+    {
+      "t_sec": 1.25,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t01250ms.jpg"
+    },
+    {
+      "t_sec": 1.5,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t01500ms.jpg"
+    },
+    {
+      "t_sec": 2.0,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t02000ms.jpg"
+    },
+    {
+      "t_sec": 2.5,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t02500ms.jpg"
+    },
+    {
+      "t_sec": 3.0,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t03000ms.jpg"
+    },
+    {
+      "t_sec": 3.277,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t03276ms.jpg"
+    },
+    {
+      "t_sec": 4.0,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t04000ms.jpg"
+    },
+    {
+      "t_sec": 5.0,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t05000ms.jpg"
+    },
+    {
+      "t_sec": 6.553,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t06553ms.jpg"
+    },
+    {
+      "t_sec": 9.83,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t09829ms.jpg"
+    },
+    {
+      "t_sec": 13.107,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t13106ms.jpg"
+    },
+    {
+      "t_sec": 16.383,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t16383ms.jpg"
+    },
+    {
+      "t_sec": 19.66,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t19659ms.jpg"
+    },
+    {
+      "t_sec": 22.937,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t22936ms.jpg"
+    },
+    {
+      "t_sec": 26.213,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t26213ms.jpg"
+    },
+    {
+      "t_sec": 29.49,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t29490ms.jpg"
+    },
+    {
+      "t_sec": 32.767,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t32766ms.jpg"
+    },
+    {
+      "t_sec": 36.043,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t36043ms.jpg"
+    },
+    {
+      "t_sec": 39.32,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t39319ms.jpg"
+    },
+    {
+      "t_sec": 42.597,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t42596ms.jpg"
+    },
+    {
+      "t_sec": 45.873,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t45873ms.jpg"
+    },
+    {
+      "t_sec": 49.15,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t49150ms.jpg"
+    },
+    {
+      "t_sec": 52.427,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t52426ms.jpg"
+    },
+    {
+      "t_sec": 55.703,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t55703ms.jpg"
+    },
+    {
+      "t_sec": 58.98,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t58980ms.jpg"
+    },
+    {
+      "t_sec": 62.257,
+      "file": "Screen_Recording_2026-07-25_at_12.31.26\u202fPM_t62256ms.jpg"
+    }
+  ]
+}
