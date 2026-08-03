@@ -57,8 +57,6 @@ body[data-page="home"].home-prelaunch .landing__logo {
   display: block;
   width: auto;
   height: calc(48 / var(--ref-h) * var(--frame-h));
-  max-width: min(100%, calc(263 / var(--ref-w) * var(--frame-w)));
-  max-height: calc(48 / var(--ref-h) * var(--frame-h));
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
